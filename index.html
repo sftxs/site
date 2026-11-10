@@ -8,13 +8,13 @@
         :root {
             --bg: #09090d;
             --card-bg: #13131a;
-            --border: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.09);
             --text: #ffffff;
             --muted: #9496a6;
             --tg-color: #229ed9;
             --accent: #6c5ce7;
-            --gap: 14px;
-            --radius: 18px;
+            --gap: 16px;
+            --radius: 16px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -31,24 +31,18 @@
         }
         .container {
             width: 100%;
-            max-width: 680px;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
-            gap: 26px;
-            transition: max-width 0.3s ease;
+            gap: 28px;
         }
-        .container.wide-layout { max-width: 1060px; }
-
         .block { width: 100%; }
         .align-left { text-align: left; align-items: flex-start; }
         .align-center { text-align: center; align-items: center; }
         .align-right { text-align: right; align-items: flex-end; }
 
-        .header-block {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        /* Header */
+        .header-block { display: flex; flex-direction: column; gap: 10px; }
         .avatar {
             width: 92px;
             height: 92px;
@@ -69,6 +63,7 @@
         .title { font-size: 28px; font-weight: 800; letter-spacing: -0.4px; }
         .subtitle { color: var(--muted); font-size: 15px; line-height: 1.5; max-width: 520px; }
 
+        /* Telegram Button */
         .button-block { display: flex; flex-direction: column; }
         .tg-btn {
             display: inline-flex;
@@ -86,8 +81,6 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
         .tg-btn:hover {
             transform: translateY(-2px);
@@ -101,7 +94,6 @@
             70% { box-shadow: 0 0 0 14px rgba(42, 171, 238, 0), 0 8px 25px rgba(34, 158, 217, 0.4); }
             100% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0), 0 8px 25px rgba(34, 158, 217, 0.4); }
         }
-
         .floating-tg {
             position: fixed;
             bottom: 20px;
@@ -113,95 +105,105 @@
         }
         .floating-tg .tg-btn { width: 100%; }
 
+        /* Card Shared */
         .gallery-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
             transition: transform 0.25s ease, border-color 0.25s ease;
             position: relative;
-            display: flex;
-            flex-direction: column;
         }
         .gallery-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(255, 255, 255, 0.24);
+            border-color: rgba(255, 255, 255, 0.26);
         }
         .gallery-card .img-wrap {
             width: 100%;
-            overflow: hidden;
             position: relative;
-            background: #0d0d12;
+            overflow: hidden;
+            line-height: 0;
         }
         .gallery-card img {
             width: 100%;
-            height: 100%;
+            height: auto;
             display: block;
-            object-fit: cover;
             cursor: pointer;
-            transition: transform 0.35s ease;
+            user-select: none;
+            -webkit-user-drag: none;
         }
-        .gallery-card:hover img { transform: scale(1.03); }
         .gallery-caption {
             padding: 10px 14px;
             font-size: 13.5px;
             color: #d6d8e4;
             text-align: center;
-            background: rgba(18, 18, 26, 0.95);
+            background: rgba(18, 18, 26, 0.96);
             border-top: 1px solid var(--border);
+            line-height: 1.4;
         }
 
-        .ratio-9-16 .img-wrap { aspect-ratio: 9 / 16; }
-        .ratio-3-4 .img-wrap  { aspect-ratio: 3 / 4; }
-        .ratio-1-1 .img-wrap  { aspect-ratio: 1 / 1; }
-        .ratio-16-9 .img-wrap { aspect-ratio: 16 / 9; }
-        .ratio-auto .img-wrap { aspect-ratio: auto; }
-        .ratio-auto .img-wrap img { height: auto; object-fit: contain; }
+        /* 1. FREEFORM 1:1 CANVAS STAGE */
+        .free-canvas-stage {
+            position: relative;
+            width: 100%;
+            min-height: 100px;
+        }
+        .free-canvas-item {
+            position: absolute;
+            transform-origin: top left;
+        }
+        .free-canvas-item:hover {
+            z-index: 50 !important;
+        }
 
-        .gallery-grid {
-            display: grid;
+        /* 2. SMART FLEX FLOW (Left-to-Right, Custom Per-Image Width, No Crop) */
+        .smart-flow-wrap {
+            display: flex;
+            flex-wrap: wrap;
             gap: var(--gap);
             width: 100%;
-            align-items: start;
+            justify-content: center;
+            align-items: center;
         }
-        .gallery-grid.cols-1 { grid-template-columns: 1fr; }
-        .gallery-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-        .gallery-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-        .gallery-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .smart-flow-item {
+            flex: 0 0 auto;
+            transition: transform 0.25s ease;
+        }
+        .smart-flow-item:hover { transform: translateY(-3px); }
 
-        .gallery-masonry {
-            column-gap: var(--gap);
-            width: 100%;
+        @media (max-width: 600px) {
+            .mobile-stack .free-canvas-stage {
+                height: auto !important;
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+            }
+            .mobile-stack .free-canvas-item {
+                position: relative !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+            }
+            .mobile-stack .smart-flow-item {
+                width: 100% !important;
+            }
         }
-        .gallery-masonry.cols-1 { column-count: 1; }
-        .gallery-masonry.cols-2 { column-count: 2; }
-        .gallery-masonry.cols-3 { column-count: 3; }
-        .gallery-masonry.cols-4 { column-count: 4; }
-        .gallery-masonry .gallery-card {
-            break-inside: avoid;
-            margin-bottom: var(--gap);
-            display: inline-block;
-            width: 100%;
-        }
-        .gallery-masonry .img-wrap { aspect-ratio: auto !important; }
-        .gallery-masonry .img-wrap img { height: auto; object-fit: cover; }
 
+        /* 3. VERTICAL & HORIZONTAL CAROUSELS */
         .v-carousel-wrap {
             display: grid;
             gap: var(--gap);
             width: 100%;
-            height: 640px;
+            height: 660px;
             overflow: hidden;
             position: relative;
-            mask-image: linear-gradient(to bottom, transparent 0%, black 7%, black 93%, transparent 100%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 7%, black 93%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
         }
         .v-carousel-wrap.cols-1 { grid-template-columns: 1fr; }
         .v-carousel-wrap.cols-2 { grid-template-columns: repeat(2, 1fr); }
         .v-carousel-wrap.cols-3 { grid-template-columns: repeat(3, 1fr); }
         .v-carousel-wrap.cols-4 { grid-template-columns: repeat(4, 1fr); }
-
         .v-col { overflow: hidden; position: relative; height: 100%; }
         .v-track {
             display: flex;
@@ -211,15 +213,8 @@
             will-change: transform;
         }
         .v-carousel-wrap:hover .v-track { animation-play-state: paused !important; }
-
-        @keyframes scrollDown {
-            0% { transform: translateY(-50%); }
-            100% { transform: translateY(0%); }
-        }
-        @keyframes scrollUp {
-            0% { transform: translateY(0%); }
-            100% { transform: translateY(-50%); }
-        }
+        @keyframes scrollDown { 0% { transform: translateY(-50%); } 100% { transform: translateY(0%); } }
+        @keyframes scrollUp { 0% { transform: translateY(0%); } 100% { transform: translateY(-50%); } }
 
         .h-carousel-wrap {
             width: 100%;
@@ -235,33 +230,21 @@
             display: flex;
             width: max-content;
             gap: var(--gap);
+            align-items: center;
             will-change: transform;
         }
         .h-carousel-wrap:hover .h-row { animation-play-state: paused !important; }
-        .h-row .gallery-card { width: 260px; flex-shrink: 0; }
-
-        @keyframes scrollLeft {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-        }
-        @keyframes scrollRight {
-            0% { transform: translateX(-50%); }
-            100% { transform: translateX(0%); }
-        }
+        .h-row .gallery-card { width: 280px; flex-shrink: 0; }
+        @keyframes scrollLeft { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+        @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0%); } }
 
         @media (max-width: 768px) {
-            .gallery-grid.cols-3, .gallery-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
-            .gallery-masonry.cols-3, .gallery-masonry.cols-4 { column-count: 2; }
             .v-carousel-wrap.cols-3, .v-carousel-wrap.cols-4 { grid-template-columns: repeat(2, 1fr); }
             .v-carousel-wrap { height: 520px; }
-            .h-row .gallery-card { width: 210px; }
-        }
-        @media (max-width: 480px) {
-            .mobile-cols-1.gallery-grid { grid-template-columns: 1fr !important; }
-            .mobile-cols-1.gallery-masonry { column-count: 1 !important; }
-            .mobile-cols-1.v-carousel-wrap { grid-template-columns: 1fr !important; }
+            .h-row .gallery-card { width: 220px; }
         }
 
+        /* Lightbox */
         .lightbox {
             position: fixed;
             inset: 0;
@@ -293,6 +276,20 @@
     </div>
 
     <script>
+        const DEFAULT_WATERMARK = {
+            enabled: true,
+            type: "text",
+            text: "toiletgonzo.vip",
+            logoSrc: "",
+            size: 24,
+            opacity: 0.85,
+            color: "#ffffff",
+            style: "outline",
+            angle: 0,
+            defaultX: 50,
+            defaultY: 88
+        };
+
         const DEFAULT_CONFIG = {
             title: "ToiletGonzo",
             subtitle: "Official Page & Direct Contact",
@@ -306,29 +303,20 @@
             buttonWidth: "auto",
             buttonFloating: false,
             buttonPulse: true,
-            displayMode: "grid",
-            galleryColumns: 2,
-            mobileColumns: 2,
-            aspectRatio: "3-4",
+            displayMode: "canvas",     // 'canvas' (1:1 Freeform) | 'flow' (Smart Rows) | 'v-carousel' | 'h-carousel'
+            mobileMode: "exact",       // 'exact' (1:1 scaled canvas) | 'stack' (vertical feed on small phones)
+            galleryColumns: 3,
             carouselDirection: "down",
             carouselSpeed: 28,
             hCarouselRows: 1,
             imageClickAction: "zoom",
             layoutOrder: ["header", "button", "gallery"],
+            watermark: DEFAULT_WATERMARK,
             images: []
         };
 
         let activeConfig = DEFAULT_CONFIG;
-
-        function handleImageClick(src) {
-            if (activeConfig.imageClickAction === 'telegram' && activeConfig.telegramUrl) {
-                window.open(activeConfig.telegramUrl, '_blank', 'noopener');
-                return;
-            }
-            const lb = document.getElementById('lightbox');
-            document.getElementById('lightbox-img').src = src;
-            lb.classList.add('active');
-        }
+        let cachedLogoImg = null;
 
         function escapeHtml(str) {
             return String(str || '').replace(/[&<>"']/g, m => ({
@@ -336,22 +324,149 @@
             }[m]));
         }
 
-        function buildCardHtml(img) {
-            const pos = img.pos || 'center';
-            const safeSrc = img.src;
+        function handleImageClick(imgEl) {
+            if (activeConfig.imageClickAction === 'telegram' && activeConfig.telegramUrl) {
+                window.open(activeConfig.telegramUrl, '_blank', 'noopener');
+                return;
+            }
+            const lb = document.getElementById('lightbox');
+            document.getElementById('lightbox-img').src = imgEl.src;
+            lb.classList.add('active');
+        }
+
+        // Bake watermark directly into image pixels via HTML5 Canvas
+        async function bakeWatermarkToDataUrl(imgObj, globalWm) {
+            const wm = imgObj.wm || {};
+            const isEnabled = wm.enabled !== undefined ? wm.enabled : globalWm.enabled;
+            if (!isEnabled) return imgObj.src;
+
+            const type = globalWm.type || 'text';
+            const text = (wm.customText !== undefined && wm.customText !== '') ? wm.customText : (globalWm.text || '');
+            if (type === 'text' && !text.trim()) return imgObj.src;
+            if (type === 'image' && !globalWm.logoSrc) return imgObj.src;
+
+            return new Promise((resolve) => {
+                const baseImg = new Image();
+                baseImg.crossOrigin = "anonymous";
+                baseImg.onload = async () => {
+                    const canvas = document.createElement('canvas');
+                    const w = baseImg.naturalWidth || baseImg.width;
+                    const h = baseImg.naturalHeight || baseImg.height;
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(baseImg, 0, 0, w, h);
+
+                    const xPct = wm.x !== undefined ? Number(wm.x) : Number(globalWm.defaultX ?? 50);
+                    const yPct = wm.y !== undefined ? Number(wm.y) : Number(globalWm.defaultY ?? 88);
+                    const sizePct = Number(wm.size || globalWm.size || 24);
+                    const opacity = Number(wm.opacity ?? globalWm.opacity ?? 0.85);
+                    const angle = Number(wm.angle ?? globalWm.angle ?? 0);
+
+                    const cx = (xPct / 100) * w;
+                    const cy = (yPct / 100) * h;
+
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    ctx.rotate((angle * Math.PI) / 180);
+                    ctx.globalAlpha = Math.max(0.05, Math.min(1, opacity));
+
+                    if (type === 'image' && globalWm.logoSrc) {
+                        if (!cachedLogoImg || cachedLogoImg.dataset.src !== globalWm.logoSrc) {
+                            cachedLogoImg = new Image();
+                            cachedLogoImg.dataset.src = globalWm.logoSrc;
+                            await new Promise(r => { cachedLogoImg.onload = r; cachedLogoImg.onerror = r; cachedLogoImg.src = globalWm.logoSrc; });
+                        }
+                        if (cachedLogoImg.width > 0) {
+                            const targetW = w * (sizePct / 100);
+                            const targetH = targetW * (cachedLogoImg.height / cachedLogoImg.width);
+                            ctx.drawImage(cachedLogoImg, -targetW / 2, -targetH / 2, targetW, targetH);
+                        }
+                    } else {
+                        const fontSize = Math.max(12, Math.round(w * (sizePct / 100) * 0.16));
+                        ctx.font = `900 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+
+                        const styleMode = globalWm.style || 'outline';
+                        if (styleMode === 'pill') {
+                            const metrics = ctx.measureText(text);
+                            const padX = fontSize * 0.65;
+                            const padY = fontSize * 0.38;
+                            const boxW = metrics.width + padX * 2;
+                            const boxH = fontSize + padY * 2;
+                            ctx.fillStyle = 'rgba(0, 0, 0, 0.68)';
+                            ctx.beginPath();
+                            ctx.roundRect(-boxW / 2, -boxH / 2, boxW, boxH, fontSize * 0.45);
+                            ctx.fill();
+                        } else if (styleMode === 'outline') {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+                            ctx.shadowBlur = Math.max(4, fontSize * 0.2);
+                            ctx.lineWidth = Math.max(2, fontSize * 0.14);
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.88)';
+                            ctx.lineJoin = 'round';
+                            ctx.strokeText(text, 0, 0);
+                        } else if (styleMode === 'shadow') {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.92)';
+                            ctx.shadowBlur = Math.max(6, fontSize * 0.3);
+                            ctx.shadowOffsetX = 2;
+                            ctx.shadowOffsetY = 2;
+                        }
+
+                        ctx.fillStyle = globalWm.color || '#ffffff';
+                        ctx.fillText(text, 0, 0);
+                    }
+
+                    ctx.restore();
+                    try {
+                        resolve(canvas.toDataURL('image/webp', 0.92));
+                    } catch (e) {
+                        resolve(imgObj.src);
+                    }
+                };
+                baseImg.onerror = () => resolve(imgObj.src);
+                baseImg.src = imgObj.src;
+            });
+        }
+
+        function buildCardInnerHtml(img, idx) {
             const captionHtml = img.caption ? `<div class="gallery-caption">${escapeHtml(img.caption)}</div>` : '';
             return `
                 <div class="gallery-card">
                     <div class="img-wrap">
-                        <img src="${safeSrc}" style="object-position: ${pos};" alt="${escapeHtml(img.caption || '')}" onclick="handleImageClick('${safeSrc}')">
+                        <img data-idx="${idx}" src="${img.src}" alt="${escapeHtml(img.caption || '')}" onclick="handleImageClick(this)">
                     </div>
                     ${captionHtml}
                 </div>
             `;
         }
 
-        function renderSite(cfg) {
-            const config = { ...DEFAULT_CONFIG, ...cfg };
+        function updateFreeCanvasScale() {
+            const stage = document.getElementById('freeCanvasStage');
+            if (!stage) return;
+            const stageW = stage.clientWidth || 1000;
+            const scale = stageW / 1000;
+            let maxBottom = 120;
+
+            stage.querySelectorAll('.free-canvas-item').forEach(item => {
+                const rawY = parseFloat(item.dataset.y) || 0;
+                const topPx = rawY * scale;
+                item.style.top = `${topPx}px`;
+                const h = item.offsetHeight || 200;
+                if (topPx + h > maxBottom) maxBottom = topPx + h;
+            });
+
+            stage.style.height = `${Math.ceil(maxBottom + 20)}px`;
+        }
+
+        window.addEventListener('resize', updateFreeCanvasScale);
+
+        async function renderSite(cfg) {
+            const config = {
+                ...DEFAULT_CONFIG,
+                ...cfg,
+                watermark: { ...DEFAULT_WATERMARK, ...(cfg.watermark || {}) }
+            };
             activeConfig = config;
             document.title = `${config.title || 'ToiletGonzo'} | Official Page`;
 
@@ -360,11 +475,10 @@
             app.innerHTML = '';
             floatContainer.innerHTML = '';
 
-            const cols = Number(config.galleryColumns) || 2;
-            if (cols >= 3 || config.displayMode === 'h-carousel') {
-                app.classList.add('wide-layout');
+            if (config.mobileMode === 'stack') {
+                app.classList.add('mobile-stack');
             } else {
-                app.classList.remove('wide-layout');
+                app.classList.remove('mobile-stack');
             }
 
             const tgSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.29c-.15.68-.55.85-1.11.53l-3.08-2.27-1.49 1.43c-.16.16-.3.3-.61.3l.22-3.11 5.67-5.13c.25-.22-.05-.34-.38-.12l-7.01 4.41-3.02-.95c-.66-.21-.67-.66.14-.98l11.75-4.53c.55-.2 1.03.14.85 1.01z"/></svg>`;
@@ -413,25 +527,52 @@
                     const imgs = config.images || [];
                     if (!imgs.length) return null;
 
-                    const mode = config.displayMode || 'grid';
-                    const ratioClass = `ratio-${config.aspectRatio || '3-4'}`;
-                    const mobClass = Number(config.mobileColumns) === 1 ? 'mobile-cols-1' : '';
+                    const mode = config.displayMode || 'canvas';
+                    const cols = Number(config.galleryColumns) || 3;
                     const speed = Math.max(8, Number(config.carouselSpeed) || 28);
 
-                    if (mode === 'masonry') {
+                    // 1. FREEFORM 1:1 CANVAS MODE
+                    if (mode === 'canvas') {
                         const el = document.createElement('div');
-                        el.className = `block gallery-masonry cols-${cols} ${mobClass}`;
-                        el.innerHTML = imgs.map(buildCardHtml).join('');
+                        el.className = 'block free-canvas-stage';
+                        el.id = 'freeCanvasStage';
+                        el.innerHTML = imgs.map((img, i) => {
+                            const x = img.x !== undefined ? img.x : ((i % 2) * 50);
+                            const y = img.y !== undefined ? img.y : (Math.floor(i / 2) * 380);
+                            const w = img.w !== undefined ? img.w : 46;
+                            const z = img.z !== undefined ? img.z : (i + 1);
+                            return `
+                                <div class="free-canvas-item" data-y="${y}" style="left: ${x}%; width: ${w}%; z-index: ${z};">
+                                    ${buildCardInnerHtml(img, i)}
+                                </div>
+                            `;
+                        }).join('');
                         return el;
                     }
 
+                    // 2. SMART FLEX FLOW (Left-to-right custom sizes, zero crop)
+                    if (mode === 'flow' || mode === 'grid' || mode === 'masonry') {
+                        const el = document.createElement('div');
+                        el.className = 'block smart-flow-wrap';
+                        el.innerHTML = imgs.map((img, i) => {
+                            const w = img.w !== undefined ? img.w : 46;
+                            return `
+                                <div class="smart-flow-item" style="width: calc(${w}% - 12px);">
+                                    ${buildCardInnerHtml(img, i)}
+                                </div>
+                            `;
+                        }).join('');
+                        return el;
+                    }
+
+                    // 3. VERTICAL CAROUSEL
                     if (mode === 'v-carousel') {
                         const el = document.createElement('div');
-                        el.className = `block v-carousel-wrap cols-${cols} ${ratioClass} ${mobClass}`;
+                        el.className = `block v-carousel-wrap cols-${cols}`;
                         let colsHtml = '';
                         for (let c = 0; c < cols; c++) {
-                            let colImgs = imgs.filter((_, idx) => idx % cols === c);
-                            if (!colImgs.length) colImgs = imgs.map((_, idx) => imgs[(idx + c) % imgs.length]);
+                            let colImgs = imgs.map((item, idx) => ({ item, idx })).filter((_, idx) => idx % cols === c);
+                            if (!colImgs.length) colImgs = imgs.map((item, idx) => ({ item, idx: (idx + c) % imgs.length }));
                             let baseSet = [...colImgs];
                             while (baseSet.length < 4) baseSet = baseSet.concat(colImgs);
                             const loopSet = [...baseSet, ...baseSet];
@@ -444,7 +585,7 @@
                             colsHtml += `
                                 <div class="v-col">
                                     <div class="v-track" style="animation: ${animName} ${colSpeed}s linear infinite;">
-                                        ${loopSet.map(buildCardHtml).join('')}
+                                        ${loopSet.map(entry => buildCardInnerHtml(entry.item, entry.idx)).join('')}
                                     </div>
                                 </div>
                             `;
@@ -453,15 +594,17 @@
                         return el;
                     }
 
+                    // 4. HORIZONTAL CAROUSEL
                     if (mode === 'h-carousel') {
                         const el = document.createElement('div');
-                        el.className = `block h-carousel-wrap ${ratioClass}`;
+                        el.className = 'block h-carousel-wrap';
                         const rows = Number(config.hCarouselRows) || 1;
                         let rowsHtml = '';
-
                         for (let r = 0; r < rows; r++) {
-                            let rowImgs = rows > 1 ? imgs.filter((_, idx) => idx % rows === r) : [...imgs];
-                            if (!rowImgs.length) rowImgs = [...imgs];
+                            let rowImgs = rows > 1
+                                ? imgs.map((item, idx) => ({ item, idx })).filter((_, idx) => idx % rows === r)
+                                : imgs.map((item, idx) => ({ item, idx }));
+                            if (!rowImgs.length) rowImgs = imgs.map((item, idx) => ({ item, idx }));
                             let baseSet = [...rowImgs];
                             while (baseSet.length < 6) baseSet = baseSet.concat(rowImgs);
                             const loopSet = [...baseSet, ...baseSet];
@@ -472,18 +615,13 @@
 
                             rowsHtml += `
                                 <div class="h-row" style="animation: ${animName} ${speed + r * 4}s linear infinite;">
-                                    ${loopSet.map(buildCardHtml).join('')}
+                                    ${loopSet.map(entry => buildCardInnerHtml(entry.item, entry.idx)).join('')}
                                 </div>
                             `;
                         }
                         el.innerHTML = rowsHtml;
                         return el;
                     }
-
-                    const el = document.createElement('div');
-                    el.className = `block gallery-grid cols-${cols} ${ratioClass} ${mobClass}`;
-                    el.innerHTML = imgs.map(buildCardHtml).join('');
-                    return el;
                 }
             };
 
@@ -493,6 +631,23 @@
                     if (node) app.appendChild(node);
                 }
             });
+
+            // Recalculate 1:1 Freeform Canvas height once images load
+            const allDomImgs = app.querySelectorAll('img[data-idx]');
+            allDomImgs.forEach(domImg => {
+                domImg.addEventListener('load', updateFreeCanvasScale);
+            });
+            setTimeout(updateFreeCanvasScale, 60);
+
+            // Bake watermarks onto all images
+            const imgs = config.images || [];
+            for (let i = 0; i < imgs.length; i++) {
+                const bakedUrl = await bakeWatermarkToDataUrl(imgs[i], config.watermark);
+                app.querySelectorAll(`img[data-idx="${i}"]`).forEach(el => {
+                    if (el.src !== bakedUrl) el.src = bakedUrl;
+                });
+            }
+            setTimeout(updateFreeCanvasScale, 150);
         }
 
         async function init() {
