@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToiletGonzo | Telegram</title>
+    <style>
+        body {
+            background: #0f0f11;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            text-align: center;
+            padding: 30px 20px;
+            max-width: 340px;
+            width: 100%;
+        }
+        .avatar {
+            width: 88px;
+            height: 88px;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.3);
+        }
+        h2 { margin: 0 0 8px; font-size: 22px; }
+        p { color: #a4b0be; font-size: 14px; margin: 0 0 24px; }
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #229ed9;
+            color: #fff;
+            text-decoration: none;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 14px rgba(34, 158, 217, 0.4);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="avatar">TG</div>
+        <h2>ToiletGonzo</h2>
+        <p>Связь со мной и актуальные проекты</p>
+        <!-- Ссылка на ваш Telegram -->
+        <a href="https://t.me/toiletgonzo" class="btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.29c-.15.68-.55.85-1.11.53l-3.08-2.27-1.49 1.43c-.16.16-.3.3-.61.3l.22-3.11 5.67-5.13c.25-.22-.05-.34-.38-.12l-7.01 4.41-3.02-.95c-.66-.21-.67-.66.14-.98l11.75-4.53c.55-.2 1.03.14.85 1.01z"/></svg>
+            Написать в Telegram
+        </a>
+    </div>
+</body>
+</html>
