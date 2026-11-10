@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | ToiletGonzo</title>
+    <style>
+        :root {
+            --bg: #0f0f13;
+            --panel: #181820;
+            --border: #2a2a36;
+            --text: #ffffff;
+            --muted: #8e929f;
+            --primary: #6c5ce7;
+            --tg: #229ed9;
+            --danger: #ff4757;
+            --success: #2ed573;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 24px 16px 80px;
+        }
+        .login-wrap {
+            max-width: 380px;
+            margin: 12vh auto;
+            background: var(--panel);
+            padding: 32px 24px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .admin-wrap {
+            max-width: 820px;
+            margin: 0 auto;
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px;
+        }
+        h2 { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+        label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; margin-top: 14px; }
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            background: #101016;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+        }
+        input:focus, select:focus { border-color: var(--primary); }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-success { background: var(--tg); font-size: 16px; padding: 15px 26px; width: 100%; }
+        .btn-danger { background: rgba(255, 71, 87, 0.15); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 7px 12px; }
+        .btn-sm { padding: 7px 12px; font-size: 13px; background: #252532; }
+
+        /* Order list */
+        .order-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #121218;
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .order-controls { display: flex; gap: 6px; }
+
+        /* Image Upload & List */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 14px;
+            padding: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 16px;
+        }
+        .upload-zone:hover { border-color: var(--tg); background: rgba(34, 158, 217, 0.05); }
+        .img-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+        .img-item {
+            background: #121218;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .img-item img { width: 100%; height: 150px; object-fit: cover; }
+        .img-item-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .img-actions { display: flex; justify-content: space-between; gap: 6px; }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(24, 24, 32, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+        .status-inner { max-width: 820px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .badge { font-size: 13px; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+    <!-- ОКНО ВХОДА ПО ПАРОЛЮ -->
+    <div class="login-wrap" id="loginBox">
+        <h2 style="justify-content: center; margin-bottom: 8px;">🔒 Вход в Админку</h2>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Введите пароль администратора</p>
+        <input type="password" id="passInput" placeholder="Пароль..." onkeydown="if(event.key==='Enter') checkLogin()">
+        <button class="btn" style="width: 100%; margin-top: 14px;" onclick="checkLogin()">Войти</button>
+        <p id="loginErr" style="color: var(--danger); font-size: 13px; margin-top: 12px; display: none;">Неверный пароль</p>
+    </div>
+
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
+    <div class="admin-wrap" id="adminBox">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>⚙️ Управление toiletgonzo.vip</h1>
+            <a href="/" target="_blank" class="btn btn-sm">Открыть сайт ↗</a>
+        </div>
+
+        <!-- 1. Подключение к GitHub (один раз) -->
+        <div class="card">
+            <h2>🔑 Подключение к серверу GitHub</h2>
+            <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">
+                Чтобы картинки и изменения сохранялись на сервере для всех посетителей, вставьте ваш GitHub Token (вводится 1 раз, сохраняется в браузере).
+            </p>
+            <div class="row">
+                <div>
+                    <label>Репозиторий (владелец/имя)</label>
+                    <input type="text" id="ghRepo" value="sftxs/site">
+                </div>
+                <div>
+                    <label>GitHub Personal Access Token</label>
+                    <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx...">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Расположение блоков на сайте -->
+        <div class="card">
+            <h2>📐 Порядок блоков на странице</h2>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 14px;">
+                Меняйте порядок стрелочками — например, поставьте кнопку Telegram над картинками или под ними:
+            </p>
+            <div id="layoutList"></div>
+        </div>
+
+        <!-- 3. Загрузка картинок -->
+        <div class="card">
+            <h2>🖼️ Картинки по центру сайта</h2>
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">➕ Нажмите сюда, чтобы выбрать картинки</p>
+                <p style="font-size: 13px; color: var(--muted);">Можно выбрать сразу несколько фото (JPG, PNG, WEBP)</p>
+                <input type="file" id="fileInput" multiple accept="image/*" style="display: none" onchange="handleFiles(this.files)">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label>Как отображать картинки на сайте:</label>
+                <select id="galleryColumns" onchange="updateState()">
+                    <option value="1">Крупно в 1 колонку по центру (рекомендуется)</option>
+                    <option value="2">Сеткой в 2 колонки</option>
+                </select>
+            </div>
+
+            <div class="img-list" id="imgList"></div>
+        </div>
+
+        <!-- 4. Настройка кнопки Telegram и Текстов -->
+        <div class="card">
+            <h2>✈️ Кнопка Telegram и Текст шапки</h2>
+            <div class="row">
+                <div>
+                    <label>Текст на кнопке Telegram</label>
+                    <input type="text" id="buttonText" value="Contact in Telegram" oninput="updateState()">
+                </div>
+                <div>
+                    <label>Ссылка куда ведет кнопка</label>
+                    <input type="text" id="telegramUrl" value="https://t.me/toiletgonzo" oninput="updateState()">
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <label>Позиция кнопки</label>
+                    <select id="buttonAlign" onchange="updateState()">
+                        <option value="center">По центру</option>
+                        <option value="left">Слева</option>
+                        <option value="right">Справа</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Размер и закрепление кнопки</label>
+                    <select id="buttonStyleMode" onchange="updateState()">
+                        <option value="auto">Обычная аккуратная кнопка</option>
+                        <option value="full">Во всю ширину блока</option>
+                        <option value="floating">Всегда закреплена плавающей внизу экрана</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0 10px;">
+
+            <div class="row">
+                <div>
+                    <label>Заголовок сайта (Title)</label>
+                    <input type="text" id="title" value="ToiletGonzo" oninput="updateState()">
+                </div>
+                <div>
+                    <label>Подзаголовок (Subtitle на английском)</label>
+                    <input type="text" id="subtitle" value="Official Page & Direct Contact" oninput="updateState()">
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <label>Выравнивание текста шапки</label>
+                    <select id="headerAlign" onchange="updateState()">
+                        <option value="center">По центру</option>
+                        <option value="left">Слева</option>
+                        <option value="right">Справа</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Текст круглой аватарки (или оставьте пустым)</label>
+                    <input type="text" id="avatarText" value="TG" oninput="updateState()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar" id="statusBar" style="display: none;">
+        <div class="status-inner">
+            <span class="badge" id="saveStatus">Все изменения готовы к публикации</span>
+            <button class="btn btn-success" style="width: auto;" onclick="publishToGitHub()" id="pubBtn">
+                💾 Сохранить и опубликовать на сайт
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ПАРОЛЬ ОТ АДМИНКИ (МОЖНО ИЗМЕНИТЬ ЗДЕСЬ)
+        // ==========================================
+        const ADMIN_PASSWORD = "adminadmin12"; 
+
+        let state = {
+            title: "ToiletGonzo",
+            subtitle: "Official Page & Direct Contact",
+            avatarText: "TG",
+            avatarImage: "",
+            showAvatar: true,
+            headerAlign: "center",
+            buttonText: "Contact in Telegram",
+            telegramUrl: "https://t.me/toiletgonzo",
+            buttonAlign: "center",
+            buttonWidth: "auto",
+            buttonFloating: false,
+            galleryColumns: 1,
+            layoutOrder: ["header", "gallery", "button"],
+            images: []
+        };
+
+        const BLOCK_NAMES = {
+            header: "👤 Шапка профиля (Аватар, Заголовок и Текст)",
+            gallery: "🖼️ Блок с картинками (Галерея по центру)",
+            button: "✈️ Кнопка Contact in Telegram"
+        };
+
+        function checkLogin() {
+            const val = document.getElementById('passInput').value;
+            if (val === ADMIN_PASSWORD) {
+                sessionStorage.setItem('tg_admin_auth', '1');
+                showAdmin();
+            } else {
+                document.getElementById('loginErr').style.display = 'block';
+            }
+        }
+
+        async function showAdmin() {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('adminBox').style.display = 'flex';
+            document.getElementById('statusBar').style.display = 'flex';
+
+            const savedToken = localStorage.getItem('tg_gh_token');
+            const savedRepo = localStorage.getItem('tg_gh_repo');
+            if (savedToken) document.getElementById('ghToken').value = savedToken;
+            if (savedRepo) document.getElementById('ghRepo').value = savedRepo;
+
+            try {
+                const res = await fetch(`./data.json?v=${Date.now()}`, { cache: "no-store" });
+                if (res.ok) {
+                    const data = await res.json();
+                    state = { ...state, ...data };
+                }
+            } catch (e) {}
+
+            syncInputsFromState();
+            renderLayoutOrder();
+            renderImages();
+        }
+
+        function syncInputsFromState() {
+            document.getElementById('title').value = state.title || '';
+            document.getElementById('subtitle').value = state.subtitle || '';
+            document.getElementById('avatarText').value = state.avatarText || '';
+            document.getElementById('headerAlign').value = state.headerAlign || 'center';
+            document.getElementById('buttonText').value = state.buttonText || 'Contact in Telegram';
+            document.getElementById('telegramUrl').value = state.telegramUrl || 'https://t.me/toiletgonzo';
+            document.getElementById('buttonAlign').value = state.buttonAlign || 'center';
+            document.getElementById('galleryColumns').value = String(state.galleryColumns || 1);
+
+            if (state.buttonFloating) {
+                document.getElementById('buttonStyleMode').value = 'floating';
+            } else if (state.buttonWidth === 'full') {
+                document.getElementById('buttonStyleMode').value = 'full';
+            } else {
+                document.getElementById('buttonStyleMode').value = 'auto';
+            }
+        }
+
+        function updateState() {
+            state.title = document.getElementById('title').value;
+            state.subtitle = document.getElementById('subtitle').value;
+            state.avatarText = document.getElementById('avatarText').value;
+            state.headerAlign = document.getElementById('headerAlign').value;
+            state.buttonText = document.getElementById('buttonText').value;
+            state.telegramUrl = document.getElementById('telegramUrl').value;
+            state.buttonAlign = document.getElementById('buttonAlign').value;
+            state.galleryColumns = parseInt(document.getElementById('galleryColumns').value, 10);
+
+            const mode = document.getElementById('buttonStyleMode').value;
+            state.buttonFloating = (mode === 'floating');
+            state.buttonWidth = (mode === 'full') ? 'full' : 'auto';
+        }
+
+        function renderLayoutOrder() {
+            const box = document.getElementById('layoutList');
+            box.innerHTML = state.layoutOrder.map((key, idx) => `
+                <div class="order-item">
+                    <span>${idx + 1}. ${BLOCK_NAMES[key] || key}</span>
+                    <div class="order-controls">
+                        <button class="btn btn-sm" onclick="moveBlock(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>⬆ Выше</button>
+                        <button class="btn btn-sm" onclick="moveBlock(${idx}, 1)" ${idx === state.layoutOrder.length - 1 ? 'disabled' : ''}>⬇ Ниже</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function moveBlock(idx, dir) {
+            const target = idx + dir;
+            if (target < 0 || target >= state.layoutOrder.length) return;
+            const temp = state.layoutOrder[idx];
+            state.layoutOrder[idx] = state.layoutOrder[target];
+            state.layoutOrder[target] = temp;
+            renderLayoutOrder();
+        }
+
+        // Сжатие картинок в браузере перед публикацией
+        function compressImage(file, maxWidth = 1200, quality = 0.84) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > maxWidth) {
+                            h = Math.round((h * maxWidth) / w);
+                            w = maxWidth;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/webp', quality));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleFiles(files) {
+            if (!files || !files.length) return;
+            const status = document.getElementById('saveStatus');
+            status.textContent = "⏳ Обработка картинок...";
+            for (const file of files) {
+                const dataUrl = await compressImage(file);
+                state.images.push({ src: dataUrl, caption: "" });
+            }
+            renderImages();
+            status.textContent = "✅ Картинки добавлены! Нажмите «Сохранить и опубликовать»";
+        }
+
+        function renderImages() {
+            const box = document.getElementById('imgList');
+            if (!state.images.length) {
+                box.innerHTML = `<p style="color: var(--muted); font-size: 13px;">Картинок пока нет.</p>`;
+                return;
+            }
+            box.innerHTML = state.images.map((img, i) => `
+                <div class="img-item">
+                    <img src="${img.src}" alt="">
+                    <div class="img-item-body">
+                        <input type="text" placeholder="Подпись (необязательно)" value="${(img.caption || '').replace(/"/g, '&quot;')}" oninput="state.images[${i}].caption = this.value">
+                        <div class="img-actions">
+                            <div>
+                                <button class="btn btn-sm" onclick="moveImg(${i}, -1)" ${i === 0 ? 'disabled' : ''}>⬅</button>
+                                <button class="btn btn-sm" onclick="moveImg(${i}, 1)" ${i === state.images.length - 1 ? 'disabled' : ''}>➡</button>
+                            </div>
+                            <button class="btn btn-danger" onclick="removeImg(${i})">🗑 Удалить</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function moveImg(i, dir) {
+            const target = i + dir;
+            if (target < 0 || target >= state.images.length) return;
+            const temp = state.images[i];
+            state.images[i] = state.images[target];
+            state.images[target] = temp;
+            renderImages();
+        }
+
+        function removeImg(i) {
+            state.images.splice(i, 1);
+            renderImages();
+        }
+
+        function utf8ToBase64(str) {
+            return btoa(unescape(encodeURIComponent(str)));
+        }
+
+        async function publishToGitHub() {
+            updateState();
+            const token = document.getElementById('ghToken').value.trim();
+            const repo = document.getElementById('ghRepo').value.trim();
+            const status = document.getElementById('saveStatus');
+            const btn = document.getElementById('pubBtn');
+
+            localStorage.setItem('tg_site_preview_cache', JSON.stringify(state));
+
+            if (!token) {
+                alert("Пожалуйста, вставьте ваш GitHub Personal Access Token в верхнем блоке, чтобы сохранить изменения на сервере!");
+                return;
+            }
+
+            localStorage.setItem('tg_gh_token', token);
+            localStorage.setItem('tg_gh_repo', repo);
+
+            btn.disabled = true;
+            status.textContent = "⏳ Отправка на сервер GitHub...";
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
+                let sha = null;
+
+                const getRes = await fetch(apiUrl, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github+json"
+                    },
+                    cache: "no-store"
+                });
+
+                if (getRes.ok) {
+                    const fileInfo = await getRes.json();
+                    sha = fileInfo.sha;
+                }
+
+                const body = {
+                    message: "Update site via Admin Panel",
+                    content: utf8ToBase64(JSON.stringify(state, null, 2))
+                };
+                if (sha) body.sha = sha;
+
+                const putRes = await fetch(apiUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Accept": "application/vnd.github+json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                if (!putRes.ok) {
+                    const errData = await putRes.json();
+                    throw new Error(errData.message || "Ошибка доступа к GitHub API");
+                }
+
+                status.style.color = "var(--success)";
+                status.textContent = "✅ Опубликовано! У вас сайт обновился мгновенно, у всех в мире — через 30 сек.";
+            } catch (err) {
+                status.style.color = "var(--danger)";
+                status.textContent = "❌ Ошибка: " + err.message;
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        if (sessionStorage.getItem('tg_admin_auth') === '1') {
+            showAdmin();
+        }
+    </script>
+</body>
+</html>
