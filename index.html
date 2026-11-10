@@ -233,26 +233,56 @@
             .h-row .gallery-card { width: 220px; }
         }
 
-        /* Lightbox */
+        /* Lightbox + Кнопка закрытия (крестик) для телефонов и ПК */
         .lightbox {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(10px); display: none;
-            align-items: center; justify-content: center; z-index: 999; padding: 20px; cursor: zoom-out;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 999; padding: 20px; cursor: zoom-out;
         }
         .lightbox.active { display: flex; }
+        .lightbox-close {
+            position: fixed;
+            top: max(18px, env(safe-area-inset-top, 18px));
+            right: 18px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(20, 20, 30, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1010;
+            box-shadow: 0 6px 22px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.15s ease, background 0.15s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .lightbox-close:hover, .lightbox-close:active {
+            transform: scale(0.92);
+            background: rgba(255, 71, 87, 0.92);
+            border-color: #ffffff;
+        }
         .lightbox-inner {
             position: relative;
             display: inline-block;
             line-height: 0;
             max-width: 95vw;
-            max-height: 92vh;
+            max-height: 90vh;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.85);
         }
         .lightbox-inner img.lightbox-main {
             max-width: 95vw;
-            max-height: 92vh;
+            max-height: 90vh;
             width: auto;
             height: auto;
             display: block;
@@ -266,8 +296,10 @@
     <div class="container" id="app"></div>
     <div id="floating-container"></div>
 
-    <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
-        <div class="lightbox-inner" id="lightbox-inner">
+    <!-- Полноэкранный просмотр с кнопкой крестика и защитой кнопки Назад -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox(false)">
+        <button class="lightbox-close" type="button" aria-label="Закрыть" onclick="event.stopPropagation(); closeLightbox(false)">✕</button>
+        <div class="lightbox-inner" id="lightbox-inner" onclick="event.stopPropagation()">
             <img class="lightbox-main" id="lightbox-img" src="" alt="Preview" onload="updateWatermarkFontSizes()">
             <div id="lightbox-wm"></div>
         </div>
@@ -316,6 +348,7 @@
         let activeConfig = DEFAULT_CONFIG;
         let cachedLogoImg = null;
         let currentLightboxIdx = null;
+        let isLightboxOpen = false;
         let isDataLoaded = false;
 
         function escapeHtml(str) {
@@ -368,7 +401,6 @@
             `;
         }
 
-        // Bake watermark into pixels only on demand (Lightbox open), keeping page load 100% lag-free
         async function bakeWatermarkToDataUrl(imgObj, globalWm) {
             if (imgObj._bakedSrc) return imgObj._bakedSrc;
             const wm = imgObj.wm || {};
@@ -468,6 +500,33 @@
             });
         }
 
+        function closeLightbox(fromPopState = false) {
+            const lb = document.getElementById('lightbox');
+            if (!lb || !lb.classList.contains('active')) return;
+            lb.classList.remove('active');
+            document.body.style.overflow = '';
+            isLightboxOpen = false;
+            currentLightboxIdx = null;
+
+            // Если закрыли крестиком или кликом по фону — убираем технический шаг из истории браузера
+            if (!fromPopState && history.state && history.state.lightboxOpen) {
+                history.back();
+            }
+        }
+
+        // Перехват системной кнопки «Назад» на телефонах (закрывает фото вместо выхода с сайта)
+        window.addEventListener('popstate', () => {
+            if (isLightboxOpen) {
+                closeLightbox(true);
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isLightboxOpen) {
+                closeLightbox(false);
+            }
+        });
+
         async function handleImageClick(idx) {
             if (activeConfig.imageClickAction === 'telegram' && activeConfig.telegramUrl) {
                 window.open(activeConfig.telegramUrl, '_blank', 'noopener');
@@ -493,6 +552,12 @@
                         lbWm.innerHTML = '';
                     }
                 });
+            }
+
+            if (!isLightboxOpen) {
+                history.pushState({ lightboxOpen: true }, '');
+                isLightboxOpen = true;
+                document.body.style.overflow = 'hidden';
             }
 
             lb.classList.add('active');
@@ -719,7 +784,6 @@
         }
 
         async function init() {
-            // 1. Мгновенный показ из кэша, если посетитель уже заходил или это админ
             const adminCache = localStorage.getItem('tg_site_preview_cache');
             const visitorCache = localStorage.getItem('tg_visitor_fast_cache');
 
@@ -728,11 +792,9 @@
             } else if (visitorCache) {
                 try { renderSite(JSON.parse(visitorCache), false); isDataLoaded = true; } catch (e) {}
             } else {
-                // Показываем шапку, кнопку и мерцающие карточки-скелетоны с 1-й миллисекунды
                 renderSite(DEFAULT_CONFIG, true);
             }
 
-            // 2. Сверхбыстрая загрузка первого экрана (data-fast.json с CDN-кэшированием)
             const fastPromise = fetch('./data-fast.json')
                 .then(r => r.ok ? r.json() : null)
                 .then(fastData => {
@@ -743,7 +805,6 @@
                 })
                 .catch(() => {});
 
-            // 3. Полная загрузка всех фотографий (data.json через глобальный CDN GitHub)
             try {
                 const fullRes = await fetch('./data.json');
                 if (fullRes.ok) {
