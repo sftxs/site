@@ -202,16 +202,31 @@
             .h-row .gallery-card { width: 220px; }
         }
 
-        /* Lightbox */
+        /* Lightbox (Full Screen with Watermark Support) */
         .lightbox {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(10px); display: none;
             align-items: center; justify-content: center; z-index: 999; padding: 20px; cursor: zoom-out;
         }
         .lightbox.active { display: flex; }
-        .lightbox img {
-            max-width: 95vw; max-height: 92vh; border-radius: 12px;
+        .lightbox-inner {
+            position: relative;
+            display: inline-block;
+            line-height: 0;
+            max-width: 95vw;
+            max-height: 92vh;
+            border-radius: 12px;
+            overflow: hidden;
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.85);
+        }
+        .lightbox-inner img.lightbox-main {
+            max-width: 95vw;
+            max-height: 92vh;
+            width: auto;
+            height: auto;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
         }
     </style>
 </head>
@@ -220,8 +235,12 @@
     <div class="container" id="app"></div>
     <div id="floating-container"></div>
 
+    <!-- Полноэкранный просмотр с вотермаркой -->
     <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
-        <img id="lightbox-img" src="" alt="Preview">
+        <div class="lightbox-inner" id="lightbox-inner">
+            <img class="lightbox-main" id="lightbox-img" src="" alt="Preview" onload="updateWatermarkFontSizes()">
+            <div id="lightbox-wm"></div>
+        </div>
     </div>
 
     <script>
@@ -265,6 +284,8 @@
         };
 
         let activeConfig = DEFAULT_CONFIG;
+        let cachedLogoImg = null;
+        let currentLightboxIdx = null;
 
         function escapeHtml(str) {
             return String(str || '').replace(/[&<>"']/g, m => ({
@@ -273,6 +294,7 @@
         }
 
         function buildWatermarkOverlayHtml(img, gWm) {
+            if (img._isBaked) return '';
             const wm = img.wm || {};
             const isEnabled = wm.enabled !== undefined ? wm.enabled : gWm.enabled;
             if (!isEnabled) return '';
@@ -302,6 +324,109 @@
             `;
         }
 
+        // Впекание вотермарки прямо в пиксели фото (защита при открытии и скачивании)
+        async function bakeWatermarkToDataUrl(imgObj, globalWm) {
+            if (imgObj._bakedSrc) return imgObj._bakedSrc;
+            const wm = imgObj.wm || {};
+            const isEnabled = wm.enabled !== undefined ? wm.enabled : globalWm.enabled;
+            if (!isEnabled) return imgObj.src;
+
+            const type = globalWm.type || 'text';
+            const text = (wm.customText !== undefined && wm.customText !== '') ? wm.customText : (globalWm.text || '');
+            if (type === 'text' && !text.trim()) return imgObj.src;
+            if (type === 'image' && !globalWm.logoSrc) return imgObj.src;
+
+            return new Promise((resolve) => {
+                const baseImg = new Image();
+                baseImg.crossOrigin = "anonymous";
+                baseImg.onload = async () => {
+                    const canvas = document.createElement('canvas');
+                    const w = baseImg.naturalWidth || baseImg.width;
+                    const h = baseImg.naturalHeight || baseImg.height;
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(baseImg, 0, 0, w, h);
+
+                    const xPct = wm.x !== undefined ? Number(wm.x) : Number(globalWm.defaultX ?? 50);
+                    const yPct = wm.y !== undefined ? Number(wm.y) : Number(globalWm.defaultY ?? 88);
+                    const sizePct = Number(wm.size || globalWm.size || 24);
+                    const opacity = Number(wm.opacity ?? globalWm.opacity ?? 0.85);
+                    const angle = Number(wm.angle ?? globalWm.angle ?? 0);
+
+                    const cx = (xPct / 100) * w;
+                    const cy = (yPct / 100) * h;
+
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    ctx.rotate((angle * Math.PI) / 180);
+                    ctx.globalAlpha = Math.max(0.05, Math.min(1, opacity));
+
+                    if (type === 'image' && globalWm.logoSrc) {
+                        if (!cachedLogoImg || cachedLogoImg.dataset.src !== globalWm.logoSrc) {
+                            cachedLogoImg = new Image();
+                            cachedLogoImg.dataset.src = globalWm.logoSrc;
+                            await new Promise(r => { cachedLogoImg.onload = r; cachedLogoImg.onerror = r; cachedLogoImg.src = globalWm.logoSrc; });
+                        }
+                        if (cachedLogoImg.width > 0) {
+                            const targetW = w * (sizePct / 100);
+                            const targetH = targetW * (cachedLogoImg.height / cachedLogoImg.width);
+                            ctx.drawImage(cachedLogoImg, -targetW / 2, -targetH / 2, targetW, targetH);
+                        }
+                    } else {
+                        const fontSize = Math.max(12, Math.round(w * (sizePct / 100) * 0.16));
+                        ctx.font = `900 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+
+                        const styleMode = globalWm.style || 'outline';
+                        if (styleMode === 'pill') {
+                            const metrics = ctx.measureText(text);
+                            const padX = fontSize * 0.65;
+                            const padY = fontSize * 0.38;
+                            const boxW = metrics.width + padX * 2;
+                            const boxH = fontSize + padY * 2;
+                            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                            ctx.beginPath();
+                            if (ctx.roundRect) {
+                                ctx.roundRect(-boxW / 2, -boxH / 2, boxW, boxH, fontSize * 0.45);
+                            } else {
+                                ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
+                            }
+                            ctx.fill();
+                        } else if (styleMode === 'outline') {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+                            ctx.shadowBlur = Math.max(4, fontSize * 0.2);
+                            ctx.lineWidth = Math.max(2, fontSize * 0.14);
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.92)';
+                            ctx.lineJoin = 'round';
+                            ctx.strokeText(text, 0, 0);
+                        } else if (styleMode === 'shadow') {
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.95)';
+                            ctx.shadowBlur = Math.max(6, fontSize * 0.3);
+                            ctx.shadowOffsetX = 2;
+                            ctx.shadowOffsetY = 2;
+                        }
+
+                        ctx.fillStyle = globalWm.color || '#ffffff';
+                        ctx.fillText(text, 0, 0);
+                    }
+
+                    ctx.restore();
+                    try {
+                        const out = canvas.toDataURL('image/webp', 0.92);
+                        imgObj._bakedSrc = out;
+                        imgObj._isBaked = true;
+                        resolve(out);
+                    } catch (e) {
+                        resolve(imgObj.src);
+                    }
+                };
+                baseImg.onerror = () => resolve(imgObj.src);
+                baseImg.src = imgObj.src;
+            });
+        }
+
         async function handleImageClick(idx) {
             if (activeConfig.imageClickAction === 'telegram' && activeConfig.telegramUrl) {
                 window.open(activeConfig.telegramUrl, '_blank', 'noopener');
@@ -309,22 +434,54 @@
             }
             const imgObj = activeConfig.images[idx];
             if (!imgObj) return;
+
+            currentLightboxIdx = idx;
             const lb = document.getElementById('lightbox');
-            document.getElementById('lightbox-img').src = imgObj.src;
+            const lbImg = document.getElementById('lightbox-img');
+            const lbWm = document.getElementById('lightbox-wm');
+
+            if (imgObj._isBaked && imgObj._bakedSrc) {
+                lbImg.src = imgObj._bakedSrc;
+                lbWm.innerHTML = '';
+            } else {
+                lbImg.src = imgObj.src;
+                lbWm.innerHTML = buildWatermarkOverlayHtml(imgObj, activeConfig.watermark);
+                // Параллельно впекаем вотермарку в полноэкранное фото
+                bakeWatermarkToDataUrl(imgObj, activeConfig.watermark).then((bakedUrl) => {
+                    if (currentLightboxIdx === idx && imgObj._isBaked) {
+                        lbImg.src = bakedUrl;
+                        lbWm.innerHTML = '';
+                    }
+                });
+            }
+
             lb.classList.add('active');
+            setTimeout(updateWatermarkFontSizes, 20);
         }
 
         function buildCardInnerHtml(img, idx, gWm) {
             const captionHtml = img.caption ? `<div class="gallery-caption">${escapeHtml(img.caption)}</div>` : '';
+            const displaySrc = img._bakedSrc || img.src;
             return `
                 <div class="gallery-card">
-                    <div class="img-wrap" onclick="handleImageClick(${idx})">
-                        <img class="main-photo" data-idx="${idx}" src="${img.src}" alt="${escapeHtml(img.caption || '')}" onload="onSiteImgLoad()">
-                        ${buildWatermarkOverlayHtml(img, gWm)}
+                    <div class="img-wrap" data-wrap-idx="${idx}" onclick="handleImageClick(${idx})">
+                        <img class="main-photo" data-idx="${idx}" src="${displaySrc}" alt="${escapeHtml(img.caption || '')}" onload="onSiteImgLoad()">
+                        <div class="card-wm-layer" data-wm-idx="${idx}">${buildWatermarkOverlayHtml(img, gWm)}</div>
                     </div>
                     ${captionHtml}
                 </div>
             `;
+        }
+
+        function updateWatermarkFontSizes() {
+            document.querySelectorAll('.img-wrap, #lightbox-inner').forEach(wrap => {
+                const w = wrap.clientWidth || 300;
+                wrap.querySelectorAll('.wm-live[data-size]').forEach(el => {
+                    const sizePct = parseFloat(el.dataset.size) || 24;
+                    const px = Math.max(10, Math.round(w * (sizePct / 100) * 0.16));
+                    el.style.fontSize = `${px}px`;
+                });
+            });
         }
 
         function updateFreeCanvasScale() {
@@ -344,15 +501,7 @@
 
                 stage.style.height = `${Math.ceil(maxBottom + 20)}px`;
             }
-
-            document.querySelectorAll('.img-wrap').forEach(wrap => {
-                const w = wrap.clientWidth || 300;
-                wrap.querySelectorAll('.wm-live[data-size]').forEach(el => {
-                    const sizePct = parseFloat(el.dataset.size) || 24;
-                    const px = Math.max(10, Math.round(w * (sizePct / 100) * 0.16));
-                    el.style.fontSize = `${px}px`;
-                });
-            });
+            updateWatermarkFontSizes();
         }
 
         function onSiteImgLoad() {
@@ -361,7 +510,7 @@
 
         window.addEventListener('resize', updateFreeCanvasScale);
 
-        function renderSite(cfg) {
+        async function renderSite(cfg) {
             const config = {
                 ...DEFAULT_CONFIG,
                 ...cfg,
@@ -518,6 +667,21 @@
             });
 
             setTimeout(updateFreeCanvasScale, 60);
+
+            // Фоновое впекание вотермарок в пиксели всех картинок
+            const imgs = config.images || [];
+            for (let i = 0; i < imgs.length; i++) {
+                bakeWatermarkToDataUrl(imgs[i], config.watermark).then((bakedUrl) => {
+                    if (imgs[i]._isBaked) {
+                        app.querySelectorAll(`img.main-photo[data-idx="${i}"]`).forEach(el => {
+                            el.src = bakedUrl;
+                        });
+                        app.querySelectorAll(`.card-wm-layer[data-wm-idx="${i}"]`).forEach(el => {
+                            el.innerHTML = '';
+                        });
+                    }
+                });
+            }
         }
 
         async function init() {
