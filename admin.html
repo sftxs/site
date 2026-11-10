@@ -17,7 +17,7 @@
             --tg: #229ed9;
             --danger: #ff4757;
             --success: #2ed573;
-            --warn: #ffa502;
+            --gap: 16px;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -103,18 +103,17 @@
             gap: 7px;
             text-decoration: none;
         }
-        .btn:hover { filter: brightness(1.1); }
+        .btn:hover { filter: brightness(1.12); }
         .btn:active { transform: scale(0.98); }
         .btn-success { background: var(--tg); font-size: 15px; padding: 13px 24px; }
         .btn-danger { background: rgba(255, 71, 87, 0.14); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 6px 11px; font-size: 12px; }
         .btn-sm { padding: 7px 12px; font-size: 12.5px; background: var(--panel-2); border: 1px solid var(--border); }
         .btn-sm.active-mode { background: var(--tg); border-color: #fff; box-shadow: 0 0 15px rgba(34, 158, 217, 0.45); }
 
-        /* Upload Zone */
         .upload-zone {
             border: 2px dashed var(--border);
             border-radius: 14px;
-            padding: 22px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: border-color 0.2s, background 0.2s;
@@ -123,7 +122,6 @@
         }
         .upload-zone:hover { border-color: var(--tg); background: rgba(34, 158, 217, 0.06); }
 
-        /* Toolbars for Visual Canvas */
         .studio-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -136,18 +134,15 @@
             border-radius: 12px;
             margin-bottom: 14px;
         }
-        .mode-switch-group {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .mode-switch-group { display: flex; gap: 8px; flex-wrap: wrap; }
+
         .inspector-bar {
             display: none;
             flex-wrap: wrap;
             gap: 12px;
             align-items: center;
             justify-content: space-between;
-            background: rgba(108, 92, 231, 0.12);
+            background: rgba(108, 92, 231, 0.14);
             border: 1px solid var(--primary);
             padding: 10px 14px;
             border-radius: 12px;
@@ -156,53 +151,75 @@
         }
         .inspector-bar.active { display: flex; }
 
-        /* WYSIWYG LIVE SITE WORKSPACE */
+        /* LIVE 1:1 SITE WORKSPACE */
         .workspace-outer {
             width: 100%;
             background: #09090d;
             background-image:
-                radial-gradient(circle at 50% 0%, rgba(108, 92, 231, 0.12), transparent 55%),
-                linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px);
+                radial-gradient(circle at 50% 0%, rgba(108, 92, 231, 0.14), transparent 55%),
+                linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
             background-size: 100% 100%, 40px 40px, 40px 40px;
             border: 2px solid var(--border);
             border-radius: 18px;
-            padding: 24px 18px 40px;
+            padding: 28px 18px 48px;
             position: relative;
             overflow: hidden;
         }
-        .workspace-stage {
+        .workspace-site-container {
             width: 100%;
             max-width: 1000px;
             margin: 0 auto;
-            position: relative;
-            min-height: 460px;
-            transition: height 0.1s ease;
-        }
-        /* Snap Center Guide Line */
-        .snap-guide-v {
-            position: absolute;
-            top: 0; bottom: 0;
-            left: 50%;
-            width: 2px;
-            background: #00d2d3;
-            box-shadow: 0 0 10px #00d2d3;
-            z-index: 999;
-            display: none;
-            pointer-events: none;
-        }
-        .snap-guide-h {
-            position: absolute;
-            left: 0; right: 0;
-            height: 2px;
-            background: #00d2d3;
-            box-shadow: 0 0 10px #00d2d3;
-            z-index: 999;
-            display: none;
-            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
         }
 
-        /* Canvas Image Item in Studio */
+        /* Live Header & Button Preview inside Workspace */
+        .align-left { text-align: left; align-items: flex-start; }
+        .align-center { text-align: center; align-items: center; }
+        .align-right { text-align: right; align-items: flex-end; }
+        .preview-header { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .preview-avatar {
+            width: 84px; height: 84px; border-radius: 50%;
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; font-weight: 800; overflow: hidden;
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.35);
+            border: 2px solid rgba(255,255,255,0.14);
+        }
+        .preview-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .preview-title { font-size: 26px; font-weight: 800; }
+        .preview-subtitle { color: var(--muted); font-size: 14.5px; }
+        .preview-btn-wrap { display: flex; flex-direction: column; width: 100%; }
+        .preview-tg-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(135deg, #2AABEE, #1e96c8);
+            color: #fff; text-decoration: none; padding: 14px 30px; border-radius: 15px;
+            font-weight: 700; font-size: 16px;
+            box-shadow: 0 8px 24px rgba(34, 158, 217, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .preview-tg-btn.full-width { width: 100%; max-width: 480px; }
+
+        /* Stage for Images */
+        .workspace-stage {
+            width: 100%;
+            position: relative;
+            min-height: 360px;
+        }
+        .snap-guide-v {
+            position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+            background: #00d2d3; box-shadow: 0 0 10px #00d2d3;
+            z-index: 999; display: none; pointer-events: none;
+        }
+        .snap-guide-h {
+            position: absolute; left: 0; right: 0; height: 2px;
+            background: #00d2d3; box-shadow: 0 0 10px #00d2d3;
+            z-index: 999; display: none; pointer-events: none;
+        }
+
+        /* Card Item */
         .studio-item {
             background: #13131a;
             border: 2px solid rgba(255, 255, 255, 0.14);
@@ -211,6 +228,7 @@
             box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
             user-select: none;
             transition: border-color 0.15s, box-shadow 0.15s;
+            position: relative;
         }
         .studio-item.selected {
             border-color: var(--tg);
@@ -223,6 +241,7 @@
             position: relative;
             width: 100%;
             background: #0d0d12;
+            line-height: 0;
         }
         .studio-item-inner img.main-photo {
             width: 100%;
@@ -232,80 +251,47 @@
             user-select: none;
         }
 
-        /* Mode: Move vs Watermark Click cursor */
         .mode-move .studio-item { cursor: grab; }
         .mode-move .studio-item:active { cursor: grabbing; }
-        .mode-watermark .studio-item { cursor: crosshair !important; border-color: rgba(46, 213, 115, 0.5); }
+        .mode-watermark .studio-item { cursor: crosshair !important; border-color: rgba(46, 213, 115, 0.55); }
         .mode-watermark .studio-item:hover { border-color: var(--success); }
 
-        /* Top overlay controls on each card */
         .item-hud {
             position: absolute;
-            top: 8px;
-            left: 8px;
-            right: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 15;
-            pointer-events: none;
+            top: 8px; left: 8px; right: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 20; pointer-events: none;
         }
         .hud-badge {
-            background: rgba(0, 0, 0, 0.78);
-            color: #fff;
-            font-size: 11.5px;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 7px;
-            backdrop-filter: blur(4px);
-            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.8); color: #fff;
+            font-size: 11.5px; font-weight: 700; padding: 4px 8px;
+            border-radius: 7px; backdrop-filter: blur(4px); pointer-events: auto;
         }
-        .hud-actions {
-            display: flex;
-            gap: 5px;
-            pointer-events: auto;
-        }
+        .hud-actions { display: flex; gap: 4px; pointer-events: auto; }
         .hud-btn {
-            background: rgba(15, 15, 22, 0.85);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 7px;
-            padding: 4px 8px;
-            font-size: 12px;
-            cursor: pointer;
-            backdrop-filter: blur(4px);
+            background: rgba(15, 15, 22, 0.88); color: #fff;
+            border: 1px solid rgba(255,255,255,0.22); border-radius: 7px;
+            padding: 4px 7px; font-size: 11.5px; cursor: pointer;
         }
         .hud-btn:hover { background: var(--tg); border-color: #fff; }
         .hud-btn.del:hover { background: var(--danger); }
 
-        /* Corner Resize Handle (↘) */
         .resize-handle {
-            position: absolute;
-            right: -8px;
-            bottom: -8px;
-            width: 26px;
-            height: 26px;
-            background: var(--tg);
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 900;
-            cursor: nwse-resize;
-            z-index: 30;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            position: absolute; right: -8px; bottom: -8px;
+            width: 26px; height: 26px; background: var(--tg); color: #fff;
+            border: 2px solid #fff; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 900; cursor: nwse-resize;
+            z-index: 30; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
         }
         .resize-handle:hover { transform: scale(1.15); background: var(--primary); }
 
-        /* Live Watermark Overlay on Image */
+        /* Watermark Live Overlay */
         .wm-live {
             position: absolute;
             transform: translate(-50%, -50%);
             pointer-events: none;
-            z-index: 10;
+            z-index: 12;
             white-space: nowrap;
             font-weight: 900;
             line-height: 1;
@@ -313,14 +299,14 @@
         }
         .wm-live.style-outline {
             text-shadow:
-                -1.5px -1.5px 0 rgba(0,0,0,0.9),
-                 1.5px -1.5px 0 rgba(0,0,0,0.9),
-                -1.5px  1.5px 0 rgba(0,0,0,0.9),
-                 1.5px  1.5px 0 rgba(0,0,0,0.9),
+                -1.5px -1.5px 0 rgba(0,0,0,0.92),
+                 1.5px -1.5px 0 rgba(0,0,0,0.92),
+                -1.5px  1.5px 0 rgba(0,0,0,0.92),
+                 1.5px  1.5px 0 rgba(0,0,0,0.92),
                  0px 2px 6px rgba(0,0,0,0.85);
         }
         .wm-live.style-pill {
-            background: rgba(0, 0, 0, 0.68);
+            background: rgba(0, 0, 0, 0.7);
             padding: 0.35em 0.65em;
             border-radius: 0.45em;
         }
@@ -328,7 +314,6 @@
             text-shadow: 2px 2px 8px rgba(0,0,0,0.95);
         }
 
-        /* Caption input on card */
         .card-caption-input {
             width: 100%;
             border: none !important;
@@ -341,84 +326,97 @@
             color: #d6d8e4 !important;
         }
 
-        /* Smart Flow Mode inside Studio */
+        /* Smart Flow Mode */
         .studio-flow-stage {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: var(--gap);
             width: 100%;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
         }
 
-        /* Per-Image Watermark Modal */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.86);
-            backdrop-filter: blur(8px);
-            display: none;
+        /* LIVE VERTICAL CAROUSEL IN ADMIN */
+        .v-carousel-wrap {
+            display: grid;
+            gap: var(--gap);
+            width: 100%;
+            height: 680px;
+            overflow: hidden;
+            position: relative;
+            mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+        }
+        .v-carousel-wrap.cols-1 { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+        .v-carousel-wrap.cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .v-carousel-wrap.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .v-carousel-wrap.cols-4 { grid-template-columns: repeat(4, 1fr); }
+        .v-col { overflow: hidden; position: relative; height: 100%; }
+        .v-track {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            padding-bottom: var(--gap);
+            will-change: transform;
+        }
+        .v-carousel-wrap:hover .v-track { animation-play-state: paused !important; }
+        @keyframes scrollDown { 0% { transform: translateY(-50%); } 100% { transform: translateY(0%); } }
+        @keyframes scrollUp { 0% { transform: translateY(0%); } 100% { transform: translateY(-50%); } }
+
+        /* LIVE HORIZONTAL CAROUSEL IN ADMIN */
+        .h-carousel-wrap {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+        }
+        .h-row {
+            display: flex;
+            width: max-content;
+            gap: var(--gap);
             align-items: center;
-            justify-content: center;
-            z-index: 999;
-            padding: 16px;
+            will-change: transform;
+        }
+        .h-carousel-wrap:hover .h-row { animation-play-state: paused !important; }
+        .h-row .studio-item { width: 280px; flex-shrink: 0; }
+        @keyframes scrollLeft { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
+        @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0%); } }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.86);
+            backdrop-filter: blur(8px); display: none;
+            align-items: center; justify-content: center; z-index: 999; padding: 16px;
         }
         .modal-backdrop.active { display: flex; }
         .modal-box {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            max-width: 780px;
-            width: 100%;
-            padding: 22px;
-            max-height: 94vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            background: var(--panel); border: 1px solid var(--border);
+            border-radius: 18px; max-width: 780px; width: 100%; padding: 22px;
+            max-height: 94vh; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;
         }
         .modal-preview-wrap {
-            position: relative;
-            max-width: 460px;
-            margin: 0 auto;
-            border-radius: 14px;
-            overflow: hidden;
-            border: 2px solid var(--tg);
-            cursor: crosshair;
-            user-select: none;
-            background: #09090d;
+            position: relative; max-width: 460px; margin: 0 auto;
+            border-radius: 14px; overflow: hidden; border: 2px solid var(--tg);
+            cursor: crosshair; user-select: none; background: #09090d; line-height: 0;
         }
-        .modal-preview-wrap img.base-preview {
-            width: 100%;
-            height: auto;
-            display: block;
-            pointer-events: none;
-        }
+        .modal-preview-wrap img.base-preview { width: 100%; height: auto; display: block; pointer-events: none; }
 
-        /* Order list */
         .order-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #101017;
-            border: 1px solid var(--border);
-            padding: 11px 16px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: #101017; border: 1px solid var(--border);
+            padding: 11px 16px; border-radius: 10px; margin-bottom: 8px;
+            font-weight: 600; font-size: 14px;
         }
 
         .status-bar {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: rgba(21, 21, 30, 0.96);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border);
-            padding: 14px 20px;
-            display: flex;
-            justify-content: center;
-            z-index: 200;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(21, 21, 30, 0.96); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border); padding: 14px 20px;
+            display: flex; justify-content: center; z-index: 200;
         }
         .status-inner { max-width: 1120px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
         .badge { font-size: 13px; color: var(--muted); }
@@ -439,9 +437,7 @@
     <div class="admin-wrap" id="adminBox">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <h1>🎨 Визуальный конструктор и Вотермарки</h1>
-            <div style="display: flex; gap: 8px;">
-                <a href="./" target="_blank" class="btn btn-sm">Открыть сайт ↗</a>
-            </div>
+            <a href="./" target="_blank" class="btn btn-sm">Открыть сайт в новой вкладке ↗</a>
         </div>
 
         <!-- 1. Синхронизация с сервером -->
@@ -450,7 +446,7 @@
             <div class="row">
                 <div>
                     <label>Целевой репозиторий (формат: логин/репозиторий)</label>
-                    <input type="text" id="ghRepo" placeholder="логин/site" oninput="saveCreds()">
+                    <input type="text" id="ghRepo" placeholder="sftxs/site" oninput="saveCreds()">
                 </div>
                 <div>
                     <label>GitHub Personal Access Token</label>
@@ -469,11 +465,11 @@
             </div>
         </div>
 
-        <!-- 2. НАСТРОЙКА ВОТЕРМАРКИ -->
+        <!-- 2. СТУДИЯ ВОТЕРМАРОК -->
         <div class="card">
             <h2>
                 <span>💧 Студия Вотермарок (Клик по фото = Позиция)</span>
-                <button class="btn btn-sm" onclick="applyDefaultWatermarkToAll()">✨ Сбросить позицию на всех фото по умолчанию</button>
+                <button class="btn btn-sm" onclick="applyDefaultWatermarkToAll()">✨ Сбросить позицию вотермарки на всех фото по центру снизу</button>
             </h2>
             <div class="row-4">
                 <div>
@@ -530,27 +526,25 @@
             </div>
         </div>
 
-        <!-- 3. ВИЗУАЛЬНЫЙ КОНСТРУКТОР САЙТА 1:1 -->
+        <!-- 3. ВИЗУАЛЬНЫЙ ХОЛСТ 1:1 -->
         <div class="card">
             <h2>
                 <span>🖼️ Визуальный Холст 1:1 (Картинок: <span id="imgCount">0</span>)</span>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="btn btn-sm" onclick="autoArrange(2)">⚡ Ровно в 2 столбца</button>
-                    <button class="btn btn-sm" onclick="autoArrange(3)">⚡ В 3 столбца</button>
-                    <button class="btn btn-sm" onclick="autoArrange(4)">⚡ В 4 столбца</button>
-                    <button class="btn btn-sm" onclick="autoArrange(1)">⚡ По центру в 1 ряд</button>
+                    <button class="btn btn-sm" id="btnCol2" onclick="autoArrange(2)">⚡ Ровно в 2 столбца</button>
+                    <button class="btn btn-sm" id="btnCol3" onclick="autoArrange(3)">⚡ В 3 столбца</button>
+                    <button class="btn btn-sm" id="btnCol4" onclick="autoArrange(4)">⚡ В 4 столбца</button>
+                    <button class="btn btn-sm" id="btnCol1" onclick="autoArrange(1)">⚡ По центру в 1 ряд</button>
                     <button class="btn btn-danger" onclick="clearAllImages()" id="clearAllBtn" style="display: none;">Очистить все</button>
                 </div>
             </h2>
 
-            <!-- Зона загрузки -->
             <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
                 <p style="font-size: 15.5px; font-weight: 700; margin-bottom: 4px;">➕ Нажмите сюда, чтобы добавить картинки на холст</p>
                 <p style="font-size: 12.5px; color: var(--muted);">Все изображения сохраняют 100% своих исходных пропорций без обрезки</p>
                 <input type="file" id="fileInput" multiple accept="image/*" style="display: none" onchange="handleFiles(this.files)">
             </div>
 
-            <!-- Переключатель режима работы мышкой на холсте -->
             <div class="studio-toolbar">
                 <div class="mode-switch-group">
                     <button class="btn btn-sm active-mode" id="toolMoveBtn" onclick="setInteractionMode('move')">
@@ -561,16 +555,15 @@
                     </button>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <select id="displayMode" onchange="updateState(); renderWorkspace();" style="width: auto;">
+                    <select id="displayMode" onchange="onDisplayModeSelect(this.value)" style="width: auto;">
                         <option value="canvas">🎨 Свободный Холст 1:1 (Любая позиция и размер)</option>
                         <option value="flow">📐 Умные Ряды (Слева направо + свой размер у каждой)</option>
-                        <option value="v-carousel">🎡 Вертикальная карусель</option>
-                        <option value="h-carousel">🎞️ Горизонтальная карусель</option>
+                        <option value="v-carousel">🎡 Вертикальная карусель (Живое вращение)</option>
+                        <option value="h-carousel">🎞️ Горизонтальная карусель (Бегущая лента)</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Панель точной настройки выбранной картинки -->
             <div class="inspector-bar" id="inspectorBar">
                 <div>
                     <strong>Выбрана картинка #<span id="inspIdx">1</span></strong>
@@ -587,7 +580,6 @@
                 </div>
             </div>
 
-            <!-- Настройки карусели / мобильного вида -->
             <div class="row-3" style="margin-bottom: 16px;">
                 <div>
                     <label>Отображение на узких экранах телефонов:</label>
@@ -604,30 +596,29 @@
                     </select>
                 </div>
                 <div>
-                    <label>Столбцов и направление (для каруселей):</label>
+                    <label>Столбцов и движение (применяется сразу на холсте):</label>
                     <div style="display: flex; gap: 6px;">
-                        <select id="galleryColumns" onchange="updateState()">
+                        <select id="galleryColumns" onchange="onColumnsDropdownChange(this.value)">
                             <option value="1">1 ст.</option>
                             <option value="2">2 ст.</option>
-                            <option value="3" selected>3 ст.</option>
+                            <option value="3">3 ст.</option>
                             <option value="4">4 ст.</option>
                         </select>
-                        <select id="carouselDirection" onchange="updateState()">
-                            <option value="down">⬇ Вниз</option>
-                            <option value="up">⬆ Вверх</option>
-                            <option value="alt">⇅ Шахматно</option>
+                        <select id="carouselDirection" onchange="onDirectionDropdownChange(this.value)">
+                            <option value="static">⏸ Статично (Без кручения)</option>
+                            <option value="down">⬇ Карусель: Вниз</option>
+                            <option value="up">⬆ Карусель: Вверх</option>
+                            <option value="alt">⇅ Карусель: Шахматно</option>
+                            <option value="left">⬅ Горизонтально: Влево</option>
+                            <option value="right">➡ Горизонтально: Вправо</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- ЖИВОЕ ПОЛЕ САЙТА (100% WYSIWYG) -->
+            <!-- ЖИВОЕ ПОЛЕ САЙТА 1:1 (ШАПКА + КНОПКА + ГАЛЕРЕЯ/КАРУСЕЛЬ) -->
             <div class="workspace-outer mode-move" id="workspaceOuter">
-                <div class="workspace-stage" id="workspaceStage">
-                    <div class="snap-guide-v" id="snapGuideV"></div>
-                    <div class="snap-guide-h" id="snapGuideH"></div>
-                    <div id="stageItemsContainer"></div>
-                </div>
+                <div class="workspace-site-container" id="workspaceSiteContainer"></div>
             </div>
         </div>
 
@@ -639,7 +630,7 @@
             <div class="row-3">
                 <div>
                     <label>Текст на кнопке</label>
-                    <input type="text" id="buttonText" value="Contact in Telegram" oninput="updateState()">
+                    <input type="text" id="buttonText" value="Contact in Telegram" oninput="updateState(); renderWorkspace();">
                 </div>
                 <div>
                     <label>Ссылка на ваш Telegram</label>
@@ -647,7 +638,7 @@
                 </div>
                 <div>
                     <label>Режим кнопки</label>
-                    <select id="buttonStyleMode" onchange="updateState()">
+                    <select id="buttonStyleMode" onchange="updateState(); renderWorkspace();">
                         <option value="auto">Аккуратная кнопка по центру</option>
                         <option value="full">Широкая кнопка</option>
                         <option value="floating">Плавающая внизу экрана</option>
@@ -658,16 +649,16 @@
             <div class="row-3">
                 <div>
                     <label>Заголовок сайта (Title)</label>
-                    <input type="text" id="title" value="ToiletGonzo" oninput="updateState()">
+                    <input type="text" id="title" value="ToiletGonzo" oninput="updateState(); renderWorkspace();">
                 </div>
                 <div>
                     <label>Подзаголовок (Subtitle)</label>
-                    <input type="text" id="subtitle" value="Official Page & Direct Contact" oninput="updateState()">
+                    <input type="text" id="subtitle" value="Official Page & Direct Contact" oninput="updateState(); renderWorkspace();">
                 </div>
                 <div>
                     <label>Аватарка (Текст или Фото)</label>
                     <div style="display: flex; gap: 6px;">
-                        <input type="text" id="avatarText" value="TG" style="width: 70px;" oninput="updateState()">
+                        <input type="text" id="avatarText" value="TG" style="width: 70px;" oninput="updateState(); renderWorkspace();">
                         <button class="btn btn-sm" style="flex:1;" onclick="document.getElementById('avatarInput').click()">Загрузить фото</button>
                         <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatar(this.files)">
                     </div>
@@ -676,7 +667,7 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО ИНДИВИДУАЛЬНОЙ ВОТЕРМАРКИ ДЛЯ ФОТО -->
+    <!-- МОДАЛЬНОЕ ОКНО ИНДИВИДУАЛЬНОЙ ВОТЕРМАРКИ -->
     <div class="modal-backdrop" id="wmModal">
         <div class="modal-box">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -725,7 +716,6 @@
     </div>
 
     <script>
-        // Принимает и ваш пароль "adminadmin12", и стандартный "admin"
         const ALLOWED_PASSWORD_HASHES = [
             "be87fa5a2835f81ee1f04c4e43f6f7665c0a4ca8a4f25aa820b261ff0f5e6e8a",
             "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
@@ -780,7 +770,7 @@
             buttonPulse: true,
             displayMode: "canvas",
             mobileMode: "exact",
-            galleryColumns: 3,
+            galleryColumns: 2,
             carouselDirection: "down",
             carouselSpeed: 28,
             hCarouselRows: 1,
@@ -790,7 +780,7 @@
             images: []
         };
 
-        let interactionMode = 'move'; // 'move' | 'watermark'
+        let interactionMode = 'move';
         let selectedImgIndex = null;
         let modalImgIndex = null;
 
@@ -840,18 +830,15 @@
                 ...data,
                 watermark: { ...DEFAULT_WATERMARK, ...(data.watermark || {}) }
             };
-            // Ensure legacy images get clean canvas coordinates & watermark metadata
             if (!['canvas', 'flow', 'v-carousel', 'h-carousel'].includes(state.displayMode)) {
                 state.displayMode = 'canvas';
             }
             (state.images || []).forEach((img, idx) => {
-                if (img.w === undefined) img.w = 46;
-                if (img.x === undefined) img.x = (idx % 2 === 0) ? 2 : 52;
+                if (img.w === undefined) img.w = 48.5;
+                if (img.x === undefined) img.x = (idx % 2 === 0) ? 0 : 51.5;
                 if (img.y === undefined) img.y = Math.floor(idx / 2) * 420;
                 if (img.z === undefined) img.z = idx + 1;
-                if (!img.wm) {
-                    img.wm = { enabled: true, x: 50, y: 88 };
-                }
+                if (!img.wm) img.wm = { enabled: true, x: 50, y: 88 };
             });
         }
 
@@ -861,20 +848,30 @@
             const token = document.getElementById('ghToken').value.trim();
             if (!repo || !token) return;
             const status = document.getElementById('saveStatus');
-            status.textContent = "⏳ Загрузка данных с GitHub...";
+            status.textContent = "⏳ Загрузка данных с сервера...";
             try {
-                const res = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
-                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github+json" },
-                    cache: "no-store"
-                });
-                if (res.ok) {
-                    const file = await res.json();
-                    const parsed = JSON.parse(decodeURIComponent(escape(atob(file.content))));
+                // First try direct raw fetch so even >1MB data.json loads cleanly
+                const rawRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/data.json?v=${Date.now()}`, { cache: "no-store" });
+                if (rawRes.ok) {
+                    const parsed = await rawRes.json();
                     applyLoadedData(parsed);
                     syncInputsFromState();
                     renderLayoutOrder();
                     renderWorkspace();
-                    status.textContent = "✅ Данные с сайта загружены!";
+                    status.textContent = "✅ Все картинки и настройки загружены!";
+                    return;
+                }
+                const res = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
+                    headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.raw" },
+                    cache: "no-store"
+                });
+                if (res.ok) {
+                    const parsed = await res.json();
+                    applyLoadedData(parsed);
+                    syncInputsFromState();
+                    renderLayoutOrder();
+                    renderWorkspace();
+                    status.textContent = "✅ Данные загружены!";
                 }
             } catch (e) {
                 status.textContent = "⚠️ Ошибка чтения data.json: " + e.message;
@@ -889,9 +886,16 @@
             document.getElementById('telegramUrl').value = state.telegramUrl || 'https://t.me/toiletgonzo';
             document.getElementById('displayMode').value = state.displayMode || 'canvas';
             document.getElementById('mobileMode').value = state.mobileMode || 'exact';
-            document.getElementById('galleryColumns').value = String(state.galleryColumns || 3);
-            document.getElementById('carouselDirection').value = state.carouselDirection || 'down';
+            document.getElementById('galleryColumns').value = String(state.galleryColumns || 2);
             document.getElementById('imageClickAction').value = state.imageClickAction || 'zoom';
+
+            if (state.displayMode === 'v-carousel') {
+                document.getElementById('carouselDirection').value = state.carouselDirection || 'down';
+            } else if (state.displayMode === 'h-carousel') {
+                document.getElementById('carouselDirection').value = (state.carouselDirection === 'right') ? 'right' : 'left';
+            } else {
+                document.getElementById('carouselDirection').value = 'static';
+            }
 
             if (state.buttonFloating) document.getElementById('buttonStyleMode').value = 'floating';
             else if (state.buttonWidth === 'full') document.getElementById('buttonStyleMode').value = 'full';
@@ -912,6 +916,50 @@
 
             document.getElementById('wmTextBox').style.display = wm.type === 'image' ? 'none' : 'block';
             document.getElementById('wmLogoBox').style.display = wm.type === 'image' ? 'block' : 'none';
+        }
+
+        // Interactive mode & dropdown handlers so every click immediately shows on the canvas!
+        function onDisplayModeSelect(val) {
+            state.displayMode = val;
+            if (val === 'v-carousel') {
+                if (!['down', 'up', 'alt'].includes(state.carouselDirection)) state.carouselDirection = 'down';
+                document.getElementById('carouselDirection').value = state.carouselDirection;
+            } else if (val === 'h-carousel') {
+                if (!['left', 'right'].includes(state.carouselDirection)) state.carouselDirection = 'left';
+                document.getElementById('carouselDirection').value = state.carouselDirection;
+            } else {
+                document.getElementById('carouselDirection').value = 'static';
+            }
+            updateState();
+            renderWorkspace();
+        }
+
+        function onColumnsDropdownChange(val) {
+            const cols = parseInt(val, 10) || 2;
+            state.galleryColumns = cols;
+            if (state.displayMode === 'v-carousel' || state.displayMode === 'h-carousel') {
+                updateState();
+                renderWorkspace();
+            } else {
+                autoArrange(cols);
+            }
+        }
+
+        function onDirectionDropdownChange(val) {
+            if (val === 'static') {
+                state.displayMode = 'canvas';
+                document.getElementById('displayMode').value = 'canvas';
+            } else if (val === 'left' || val === 'right') {
+                state.displayMode = 'h-carousel';
+                state.carouselDirection = val;
+                document.getElementById('displayMode').value = 'h-carousel';
+            } else {
+                state.displayMode = 'v-carousel';
+                state.carouselDirection = val;
+                document.getElementById('displayMode').value = 'v-carousel';
+            }
+            updateState();
+            renderWorkspace();
         }
 
         function updateWatermarkConfig() {
@@ -948,6 +996,7 @@
             });
             updateAllLiveWatermarks();
             savePreviewCache();
+            document.getElementById('saveStatus').textContent = "✅ Позиция вотермарки сброшена на всех фото!";
         }
 
         function updateState() {
@@ -958,8 +1007,7 @@
             state.telegramUrl = document.getElementById('telegramUrl').value;
             state.displayMode = document.getElementById('displayMode').value;
             state.mobileMode = document.getElementById('mobileMode').value;
-            state.galleryColumns = parseInt(document.getElementById('galleryColumns').value, 10) || 3;
-            state.carouselDirection = document.getElementById('carouselDirection').value;
+            state.galleryColumns = parseInt(document.getElementById('galleryColumns').value, 10) || 2;
             state.imageClickAction = document.getElementById('imageClickAction').value;
 
             const mode = document.getElementById('buttonStyleMode').value;
@@ -984,8 +1032,7 @@
             outer.classList.toggle('mode-watermark', mode === 'watermark');
         }
 
-        // Image Upload (Preserves 100% natural aspect ratio)
-        function compressImage(file, maxWidth = 1100, quality = 0.84) {
+        function compressImage(file, maxWidth = 1080, quality = 0.82) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -1015,71 +1062,97 @@
             const res = await compressImage(files[0], 300, 0.86);
             state.avatarImage = res.dataUrl;
             updateState();
+            renderWorkspace();
             document.getElementById('saveStatus').textContent = "✅ Аватарка обновлена!";
         }
 
         async function handleFiles(files) {
             if (!files || !files.length) return;
             const status = document.getElementById('saveStatus');
-            status.textContent = "⏳ Загрузка картинок на холст...";
+            status.textContent = "⏳ Добавление картинок на холст...";
 
             for (const file of files) {
                 const { dataUrl, ar } = await compressImage(file);
                 const idx = state.images.length;
-                const col = idx % 2;
-                const row = Math.floor(idx / 2);
                 state.images.push({
                     src: dataUrl,
                     ar: ar || 0.75,
                     caption: "",
-                    x: col === 0 ? 2 : 51,
-                    y: row * 380,
-                    w: 47,
+                    x: (idx % 2 === 0) ? 0 : 51.5,
+                    y: Math.floor(idx / 2) * 380,
+                    w: 48.5,
                     z: idx + 1,
                     wm: { enabled: true, x: 50, y: 88 }
                 });
             }
 
-            renderWorkspace();
-            savePreviewCache();
-            status.textContent = "✅ Картинки добавлены! Перетащите их мышкой в нужное место.";
+            autoArrange(state.galleryColumns || 2);
+            status.textContent = "✅ Картинки добавлены и разложены!";
         }
 
-        // Smart Auto-Arrange into 1, 2, 3, or 4 neat columns without cropping
+        // FIXED & PERFECTED AUTO-ARRANGE (1, 2, 3, or 4 columns)
         function autoArrange(cols) {
+            cols = parseInt(cols, 10) || 2;
+            state.galleryColumns = cols;
+            document.getElementById('galleryColumns').value = String(cols);
+
+            [1, 2, 3, 4].forEach(n => {
+                const btn = document.getElementById(`btnCol${n}`);
+                if (btn) btn.classList.toggle('active-mode', n === cols);
+            });
+
             if (!state.images.length) return;
+
+            // If user was in horizontal carousel, switch to vertical carousel or canvas so columns apply
+            if (state.displayMode === 'h-carousel') {
+                state.displayMode = 'v-carousel';
+                document.getElementById('displayMode').value = 'v-carousel';
+            }
+
             const gapPct = 2;
-            const colWidthPct = Number(((100 - gapPct * (cols - 1)) / cols).toFixed(1));
+            const colWidthPct = cols === 1 ? 62 : Number(((100 - gapPct * (cols - 1)) / cols).toFixed(2));
             const colHeights = new Array(cols).fill(0);
             const stageRefWidth = 1000;
 
             state.images.forEach((img, idx) => {
-                // Place next image into the shortest column (or left-to-right row order)
-                const targetCol = idx % cols;
-                img.w = col === 1 ? 64 : colWidthPct;
-                if (cols === 1) {
-                    img.w = 60;
-                    img.x = 20;
-                } else {
-                    img.w = colWidthPct;
-                    img.x = Number((targetCol * (colWidthPct + gapPct)).toFixed(1));
+                // Pick the shortest column so cards pack tightly underneath each other with zero gaps
+                let targetCol = 0;
+                if (cols > 1) {
+                    let minH = colHeights[0];
+                    for (let c = 1; c < cols; c++) {
+                        if (colHeights[c] < minH - 5) {
+                            minH = colHeights[c];
+                            targetCol = c;
+                        }
+                    }
                 }
+
+                img.w = colWidthPct;
+                img.x = cols === 1 ? 19 : Number((targetCol * (colWidthPct + gapPct)).toFixed(2));
                 img.y = Math.round(colHeights[targetCol]);
                 img.z = idx + 1;
 
+                // Determine accurate aspect ratio from loaded DOM image if available
                 const domImg = document.querySelector(`.studio-item[data-idx="${idx}"] img.main-photo`);
-                const ar = (domImg && domImg.naturalWidth)
+                const ar = (domImg && domImg.naturalWidth && domImg.naturalHeight)
                     ? (domImg.naturalWidth / domImg.naturalHeight)
                     : (img.ar || 0.75);
                 img.ar = ar;
 
                 const pxW = (img.w / 100) * stageRefWidth;
-                const pxH = (pxW / ar) + (img.caption ? 42 : 0) + 18;
+                const pxH = Math.round(pxW / ar) + 38 + 16; // image height + caption input + gap
                 colHeights[targetCol] += pxH;
             });
 
+            updateState();
             renderWorkspace();
-            savePreviewCache();
+            document.getElementById('saveStatus').textContent = `✅ Картинки выстроены ровно в ${cols} ст.!`;
+        }
+
+        function escapeHtml(str) {
+            return String(str || '').replace(/[&<>"']/g, m => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
         }
 
         function buildWatermarkOverlayHtml(img) {
@@ -1113,16 +1186,12 @@
             `;
         }
 
-        function escapeHtml(str) {
-            return String(str || '').replace(/[&<>"']/g, m => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[m]));
-        }
-
         function updateAllLiveWatermarks() {
-            state.images.forEach((img, idx) => {
-                const box = document.getElementById(`wmBox-${idx}`);
-                if (box) box.innerHTML = buildWatermarkOverlayHtml(img);
+            document.querySelectorAll('.wm-box-layer').forEach(box => {
+                const idx = parseInt(box.dataset.idx, 10);
+                if (state.images[idx]) {
+                    box.innerHTML = buildWatermarkOverlayHtml(state.images[idx]);
+                }
             });
             scaleLiveWatermarkFonts();
         }
@@ -1143,66 +1212,169 @@
             scaleLiveWatermarkFonts();
         });
 
+        function buildStudioCardHtml(img, i, mode) {
+            const isSelected = (selectedImgIndex === i);
+            const x = img.x ?? 0;
+            const y = img.y ?? 0;
+            const w = img.w ?? 48.5;
+            const z = img.z ?? (i + 1);
+
+            const stageEl = document.getElementById('workspaceSiteContainer');
+            const stageW = stageEl ? (stageEl.clientWidth || 1000) : 1000;
+            const scale = stageW / 1000;
+
+            let posStyle = '';
+            if (mode === 'canvas') {
+                posStyle = `position: absolute; left: ${x}%; top: ${y * scale}px; width: ${w}%; z-index: ${z};`;
+            } else if (mode === 'flow') {
+                posStyle = `position: relative; width: calc(${w}% - 12px);`;
+            } else {
+                posStyle = `position: relative; width: 100%;`;
+            }
+
+            return `
+                <div class="studio-item ${isSelected ? 'selected' : ''}"
+                     data-idx="${i}"
+                     style="${posStyle}"
+                     onmousedown="onItemMouseDown(event, ${i}, this)">
+                    <div class="item-hud">
+                        <span class="hud-badge">#${i + 1} (${Math.round(w)}%)</span>
+                        <div class="hud-actions">
+                            ${mode !== 'canvas' ? `
+                                <button class="hud-btn" title="Раньше" onclick="event.stopPropagation(); moveImgOrder(${i}, -1)">⬅</button>
+                                <button class="hud-btn" title="Позже" onclick="event.stopPropagation(); moveImgOrder(${i}, 1)">➡</button>
+                            ` : ''}
+                            <button class="hud-btn" title="Настроить вотермарку" onclick="event.stopPropagation(); openWmModal(${i})">💧</button>
+                            <button class="hud-btn del" title="Удалить" onclick="event.stopPropagation(); removeImg(${i})">🗑</button>
+                        </div>
+                    </div>
+
+                    <div class="studio-item-inner">
+                        <img class="main-photo" src="${img.src}" alt="" onload="onStudioPhotoLoad(${i}, this)">
+                        <div class="wm-box-layer" data-idx="${i}">${buildWatermarkOverlayHtml(img)}</div>
+                    </div>
+
+                    <input type="text" class="card-caption-input"
+                           placeholder="Подпись (необязательно)"
+                           value="${escapeHtml(img.caption || '')}"
+                           onmousedown="event.stopPropagation()"
+                           oninput="state.images[${i}].caption = this.value; savePreviewCache();">
+
+                    ${(mode === 'canvas' || mode === 'flow') ? `
+                        <div class="resize-handle" title="Потяните, чтобы изменить размер картинки" onmousedown="onResizeMouseDown(event, ${i})">↘</div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
         function renderWorkspace() {
-            const container = document.getElementById('stageItemsContainer');
+            const siteContainer = document.getElementById('workspaceSiteContainer');
             document.getElementById('imgCount').textContent = state.images.length;
             document.getElementById('clearAllBtn').style.display = state.images.length ? 'inline-flex' : 'none';
 
-            if (!state.images.length) {
-                container.innerHTML = `<p style="color: var(--muted); text-align: center; padding: 120px 20px;">Холст пока пуст. Нажмите кнопку выше, чтобы загрузить картинки!</p>`;
-                document.getElementById('inspectorBar').classList.remove('active');
-                return;
-            }
+            const tgSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.29c-.15.68-.55.85-1.11.53l-3.08-2.27-1.49 1.43c-.16.16-.3.3-.61.3l.22-3.11 5.67-5.13c.25-.22-.05-.34-.38-.12l-7.01 4.41-3.02-.95c-.66-.21-.67-.66.14-.98l11.75-4.53c.55-.2 1.03.14.85 1.01z"/></svg>`;
 
-            const isFlow = state.displayMode === 'flow';
-            container.className = isFlow ? 'studio-flow-stage' : '';
+            const blocks = {
+                header: () => {
+                    const avatarInner = state.avatarImage
+                        ? `<img src="${state.avatarImage}" alt="Avatar">`
+                        : escapeHtml(state.avatarText || 'TG');
+                    return `
+                        <div class="preview-header align-${state.headerAlign || 'center'}">
+                            <div class="preview-avatar">${avatarInner}</div>
+                            ${state.title ? `<div class="preview-title">${escapeHtml(state.title)}</div>` : ''}
+                            ${state.subtitle ? `<div class="preview-subtitle">${escapeHtml(state.subtitle)}</div>` : ''}
+                        </div>
+                    `;
+                },
+                button: () => {
+                    return `
+                        <div class="preview-btn-wrap align-${state.buttonAlign || 'center'}">
+                            <span class="preview-tg-btn ${state.buttonWidth === 'full' ? 'full-width' : ''}">
+                                ${tgSvg}
+                                <span>${escapeHtml(state.buttonText || 'Contact in Telegram')}</span>
+                            </span>
+                        </div>
+                    `;
+                },
+                gallery: () => {
+                    if (!state.images.length) {
+                        return `<p style="color: var(--muted); text-align: center; padding: 80px 20px;">Холст пока пуст. Нажмите кнопку выше, чтобы загрузить картинки!</p>`;
+                    }
 
-            const stageW = document.getElementById('workspaceStage').clientWidth || 1000;
-            const scale = stageW / 1000;
+                    const mode = state.displayMode || 'canvas';
+                    const cols = Number(state.galleryColumns) || 2;
+                    const speed = Math.max(10, Number(state.carouselSpeed) || 28);
 
-            container.innerHTML = state.images.map((img, i) => {
-                const isSelected = (selectedImgIndex === i);
-                const x = img.x ?? 0;
-                const y = img.y ?? 0;
-                const w = img.w ?? 46;
-                const z = img.z ?? (i + 1);
+                    // 1. LIVE VERTICAL CAROUSEL IN ADMIN
+                    if (mode === 'v-carousel') {
+                        let colsHtml = '';
+                        for (let c = 0; c < cols; c++) {
+                            let colImgs = state.images.map((item, idx) => ({ item, idx })).filter((_, idx) => idx % cols === c);
+                            if (!colImgs.length) colImgs = state.images.map((item, idx) => ({ item, idx }));
+                            let baseSet = [...colImgs];
+                            while (baseSet.length < 4) baseSet = baseSet.concat(colImgs);
+                            const loopSet = [...baseSet, ...baseSet];
 
-                const posStyle = isFlow
-                    ? `position: relative; width: calc(${w}% - 12px);`
-                    : `position: absolute; left: ${x}%; top: ${y * scale}px; width: ${w}%; z-index: ${z};`;
+                            let animName = 'scrollDown';
+                            if (state.carouselDirection === 'up') animName = 'scrollUp';
+                            else if (state.carouselDirection === 'alt') animName = (c % 2 === 0) ? 'scrollDown' : 'scrollUp';
 
-                return `
-                    <div class="studio-item ${isSelected ? 'selected' : ''}"
-                         data-idx="${i}"
-                         style="${posStyle}"
-                         onmousedown="onItemMouseDown(event, ${i})">
-                        <div class="item-hud">
-                            <span class="hud-badge">#${i + 1} (${Math.round(w)}%)</span>
-                            <div class="hud-actions">
-                                ${isFlow ? `
-                                    <button class="hud-btn" title="Раньше" onclick="event.stopPropagation(); moveImgOrder(${i}, -1)">⬅</button>
-                                    <button class="hud-btn" title="Позже" onclick="event.stopPropagation(); moveImgOrder(${i}, 1)">➡</button>
-                                ` : ''}
-                                <button class="hud-btn" title="Настроить вотермарку" onclick="event.stopPropagation(); openWmModal(${i})">💧</button>
-                                <button class="hud-btn del" title="Удалить" onclick="event.stopPropagation(); removeImg(${i})">🗑</button>
+                            const colSpeed = speed + (c % 2) * 3;
+                            colsHtml += `
+                                <div class="v-col">
+                                    <div class="v-track" style="animation: ${animName} ${colSpeed}s linear infinite;">
+                                        ${loopSet.map(entry => buildStudioCardHtml(entry.item, entry.idx, 'v-carousel')).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        return `<div class="v-carousel-wrap cols-${cols}">${colsHtml}</div>`;
+                    }
+
+                    // 2. LIVE HORIZONTAL CAROUSEL IN ADMIN
+                    if (mode === 'h-carousel') {
+                        let allEntries = state.images.map((item, idx) => ({ item, idx }));
+                        let baseSet = [...allEntries];
+                        while (baseSet.length < 6) baseSet = baseSet.concat(allEntries);
+                        const loopSet = [...baseSet, ...baseSet];
+                        const animName = (state.carouselDirection === 'right') ? 'scrollRight' : 'scrollLeft';
+                        return `
+                            <div class="h-carousel-wrap">
+                                <div class="h-row" style="animation: ${animName} ${speed}s linear infinite;">
+                                    ${loopSet.map(entry => buildStudioCardHtml(entry.item, entry.idx, 'h-carousel')).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // 3. SMART FLOW ROWS
+                    if (mode === 'flow') {
+                        return `
+                            <div class="workspace-stage" id="workspaceStage">
+                                <div class="studio-flow-stage" id="stageItemsContainer">
+                                    ${state.images.map((img, i) => buildStudioCardHtml(img, i, 'flow')).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // 4. FREEFORM 1:1 CANVAS
+                    return `
+                        <div class="workspace-stage" id="workspaceStage">
+                            <div class="snap-guide-v" id="snapGuideV"></div>
+                            <div class="snap-guide-h" id="snapGuideH"></div>
+                            <div id="stageItemsContainer">
+                                ${state.images.map((img, i) => buildStudioCardHtml(img, i, 'canvas')).join('')}
                             </div>
                         </div>
+                    `;
+                }
+            };
 
-                        <div class="studio-item-inner" id="imgInner-${i}">
-                            <img class="main-photo" src="${img.src}" alt="" onload="onStudioPhotoLoad(${i}, this)">
-                            <div id="wmBox-${i}">${buildWatermarkOverlayHtml(img)}</div>
-                        </div>
-
-                        <input type="text" class="card-caption-input"
-                               placeholder="Подпись (необязательно)"
-                               value="${escapeHtml(img.caption || '')}"
-                               onmousedown="event.stopPropagation()"
-                               oninput="state.images[${i}].caption = this.value; savePreviewCache();">
-
-                        <div class="resize-handle" title="Потяните, чтобы изменить размер картинки" onmousedown="onResizeMouseDown(event, ${i})">↘</div>
-                    </div>
-                `;
-            }).join('');
+            siteContainer.innerHTML = (state.layoutOrder || ["header", "button", "gallery"])
+                .map(k => blocks[k] ? blocks[k]() : '')
+                .join('');
 
             updateInspectorBar();
             setTimeout(() => {
@@ -1211,6 +1383,7 @@
             }, 40);
         }
 
+        let initialArLoadedCount = 0;
         function onStudioPhotoLoad(idx, imgEl) {
             if (imgEl.naturalWidth && imgEl.naturalHeight && state.images[idx]) {
                 state.images[idx].ar = imgEl.naturalWidth / imgEl.naturalHeight;
@@ -1221,14 +1394,10 @@
 
         function recalcStudioStageHeight() {
             const stage = document.getElementById('workspaceStage');
-            if (!stage) return;
-            if (state.displayMode === 'flow') {
-                stage.style.height = 'auto';
-                return;
-            }
+            if (!stage || state.displayMode !== 'canvas') return;
             const stageW = stage.clientWidth || 1000;
             const scale = stageW / 1000;
-            let maxBottom = 420;
+            let maxBottom = 380;
 
             stage.querySelectorAll('.studio-item').forEach(el => {
                 const idx = parseInt(el.dataset.idx, 10);
@@ -1240,7 +1409,7 @@
                 if (topPx + h > maxBottom) maxBottom = topPx + h;
             });
 
-            stage.style.height = `${Math.ceil(maxBottom + 60)}px`;
+            stage.style.height = `${Math.ceil(maxBottom + 40)}px`;
         }
 
         function selectImage(idx) {
@@ -1288,16 +1457,16 @@
             savePreviewCache();
         }
 
-        // INTERACTIVE MOUSE DRAG OR WATERMARK CLICK ON STUDIO CANVAS
-        function onItemMouseDown(e, idx) {
+        function onItemMouseDown(e, idx, cardEl) {
             if (e.button !== 0) return;
             selectImage(idx);
 
-            // If in Watermark Click Mode (or holding Alt key) -> Click/Drag places watermark directly!
+            // Watermark Click Mode works in ALL display modes (even inside paused carousel!)
             if (interactionMode === 'watermark' || e.altKey) {
                 e.preventDefault();
-                placeWatermarkByCursor(e, idx);
-                const onMove = (moveEv) => placeWatermarkByCursor(moveEv, idx);
+                const innerEl = cardEl.querySelector('.studio-item-inner');
+                placeWatermarkByCursor(e, idx, innerEl);
+                const onMove = (moveEv) => placeWatermarkByCursor(moveEv, idx, innerEl);
                 const onUp = () => {
                     window.removeEventListener('mousemove', onMove);
                     window.removeEventListener('mouseup', onUp);
@@ -1308,11 +1477,10 @@
                 return;
             }
 
-            if (state.displayMode === 'flow') return;
+            if (state.displayMode !== 'canvas') return;
 
             e.preventDefault();
             const stage = document.getElementById('workspaceStage');
-            const itemEl = document.querySelector(`.studio-item[data-idx="${idx}"]`);
             const imgObj = state.images[idx];
             const stageW = stage.clientWidth || 1000;
             const scale = stageW / 1000;
@@ -1332,41 +1500,40 @@
                 let newX = startX + (dxPx / stageW) * 100;
                 let newY = Math.max(0, startY + dyPx / scale);
 
-                // Clamp within horizontal bounds
                 newX = Math.max(0, Math.min(100 - imgObj.w, newX));
 
-                // Magnetic Snap to Horizontal Center (50%)
                 const centerX = newX + imgObj.w / 2;
                 if (Math.abs(centerX - 50) < 1.8) {
                     newX = 50 - imgObj.w / 2;
-                    guideV.style.display = 'block';
-                } else {
+                    if (guideV) guideV.style.display = 'block';
+                } else if (guideV) {
                     guideV.style.display = 'none';
                 }
 
-                // Magnetic Snap to top align with neighboring cards
                 let snappedY = false;
                 state.images.forEach((other, oIdx) => {
                     if (oIdx !== idx && Math.abs((other.y || 0) - newY) < 14) {
                         newY = other.y || 0;
-                        guideH.style.top = `${newY * scale}px`;
-                        guideH.style.display = 'block';
+                        if (guideH) {
+                            guideH.style.top = `${newY * scale}px`;
+                            guideH.style.display = 'block';
+                        }
                         snappedY = true;
                     }
                 });
-                if (!snappedY) guideH.style.display = 'none';
+                if (!snappedY && guideH) guideH.style.display = 'none';
 
                 imgObj.x = Number(newX.toFixed(2));
                 imgObj.y = Math.round(newY);
 
-                itemEl.style.left = `${imgObj.x}%`;
-                itemEl.style.top = `${imgObj.y * scale}px`;
+                cardEl.style.left = `${imgObj.x}%`;
+                cardEl.style.top = `${imgObj.y * scale}px`;
                 recalcStudioStageHeight();
             };
 
             const onMouseUp = () => {
-                guideV.style.display = 'none';
-                guideH.style.display = 'none';
+                if (guideV) guideV.style.display = 'none';
+                if (guideH) guideH.style.display = 'none';
                 window.removeEventListener('mousemove', onMouseMove);
                 window.removeEventListener('mouseup', onMouseUp);
                 savePreviewCache();
@@ -1376,7 +1543,6 @@
             window.addEventListener('mouseup', onMouseUp);
         }
 
-        // INTERACTIVE RESIZE HANDLE (↘)
         function onResizeMouseDown(e, idx) {
             e.stopPropagation();
             e.preventDefault();
@@ -1386,10 +1552,10 @@
             const itemEl = document.querySelector(`.studio-item[data-idx="${idx}"]`);
             const badgeEl = itemEl.querySelector('.hud-badge');
             const imgObj = state.images[idx];
-            const stageW = stage.clientWidth || 1000;
+            const stageW = stage ? (stage.clientWidth || 1000) : 1000;
 
             const startMouseX = e.clientX;
-            const startW = imgObj.w || 46;
+            const startW = imgObj.w || 48.5;
 
             const onMouseMove = (moveEv) => {
                 const dxPx = moveEv.clientX - startMouseX;
@@ -1418,11 +1584,9 @@
             window.addEventListener('mouseup', onMouseUp);
         }
 
-        // CLICK-TO-PLACE WATERMARK DIRECTLY ON IMAGE
-        function placeWatermarkByCursor(e, idx) {
-            const inner = document.getElementById(`imgInner-${idx}`);
-            if (!inner) return;
-            const rect = inner.getBoundingClientRect();
+        function placeWatermarkByCursor(e, idx, innerEl) {
+            if (!innerEl) return;
+            const rect = innerEl.getBoundingClientRect();
             const xPct = Math.max(2, Math.min(98, ((e.clientX - rect.left) / rect.width) * 100));
             const yPct = Math.max(2, Math.min(98, ((e.clientY - rect.top) / rect.height) * 100));
 
@@ -1431,12 +1595,9 @@
             state.images[idx].wm.x = Number(xPct.toFixed(1));
             state.images[idx].wm.y = Number(yPct.toFixed(1));
 
-            const wmBox = document.getElementById(`wmBox-${idx}`);
-            if (wmBox) wmBox.innerHTML = buildWatermarkOverlayHtml(state.images[idx]);
-            scaleLiveWatermarkFonts();
+            updateAllLiveWatermarks();
         }
 
-        // PER-IMAGE WATERMARK STUDIO MODAL
         function openWmModal(idx) {
             if (idx === null || !state.images[idx]) return;
             modalImgIndex = idx;
@@ -1480,7 +1641,6 @@
             modalImgIndex = null;
         }
 
-        // Click / Drag inside Modal Preview
         const modalPreviewBox = document.getElementById('modalPreviewBox');
         modalPreviewBox.addEventListener('mousedown', (e) => {
             if (modalImgIndex === null) return;
@@ -1551,6 +1711,7 @@
             state.layoutOrder[target] = temp;
             renderLayoutOrder();
             updateState();
+            renderWorkspace();
         }
 
         function utf8ToBase64(str) {
@@ -1575,19 +1736,19 @@
             status.textContent = "⏳ Отправка раскладки и вотермарок на сервер...";
 
             try {
-                const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
                 let sha = null;
-
-                const getRes = await fetch(apiUrl, {
+                // Fetch root directory list so SHA is retrieved even when data.json > 1MB
+                const dirRes = await fetch(`https://api.github.com/repos/${repo}/contents/`, {
                     headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github+json" },
                     cache: "no-store"
                 });
-
-                if (getRes.ok) {
-                    const fileInfo = await getRes.json();
-                    sha = fileInfo.sha;
+                if (dirRes.ok) {
+                    const files = await dirRes.json();
+                    const found = Array.isArray(files) && files.find(f => f.name === 'data.json');
+                    if (found) sha = found.sha;
                 }
 
+                const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
                 const body = {
                     message: "Update visual canvas layout",
                     content: utf8ToBase64(JSON.stringify(state, null, 2))
