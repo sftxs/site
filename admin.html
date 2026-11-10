@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>Visual Studio | Control Panel</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236c5ce7'/%3E%3Cstop offset='100%25' stop-color='%23229ed9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='url(%23g)'/%3E%3Ctext x='50' y='64' font-family='Arial,sans-serif' font-size='42' font-weight='900' fill='%23ffffff' text-anchor='middle'%3ETG%3C/text%3E%3C/svg%3E">
     <style>
         :root {
             --bg: #0b0b10;
@@ -175,7 +176,6 @@
             gap: 26px;
         }
 
-        /* Live Header & Button Preview inside Workspace */
         .align-left { text-align: left; align-items: flex-start; }
         .align-center { text-align: center; align-items: center; }
         .align-right { text-align: right; align-items: flex-end; }
@@ -202,7 +202,6 @@
         }
         .preview-tg-btn.full-width { width: 100%; max-width: 480px; }
 
-        /* Stage for Images */
         .workspace-stage {
             width: 100%;
             position: relative;
@@ -219,7 +218,6 @@
             z-index: 999; display: none; pointer-events: none;
         }
 
-        /* Card Item */
         .studio-item {
             background: #13131a;
             border: 2px solid rgba(255, 255, 255, 0.14);
@@ -286,7 +284,6 @@
         }
         .resize-handle:hover { transform: scale(1.15); background: var(--primary); }
 
-        /* Watermark Live Overlay */
         .wm-live {
             position: absolute;
             transform: translate(-50%, -50%);
@@ -326,7 +323,6 @@
             color: #d6d8e4 !important;
         }
 
-        /* Smart Flow Mode */
         .studio-flow-stage {
             display: flex;
             flex-wrap: wrap;
@@ -336,7 +332,6 @@
             align-items: flex-start;
         }
 
-        /* LIVE VERTICAL CAROUSEL IN ADMIN */
         .v-carousel-wrap {
             display: grid;
             gap: var(--gap);
@@ -363,7 +358,6 @@
         @keyframes scrollDown { 0% { transform: translateY(-50%); } 100% { transform: translateY(0%); } }
         @keyframes scrollUp { 0% { transform: translateY(0%); } 100% { transform: translateY(-50%); } }
 
-        /* LIVE HORIZONTAL CAROUSEL IN ADMIN */
         .h-carousel-wrap {
             width: 100%;
             overflow: hidden;
@@ -386,7 +380,6 @@
         @keyframes scrollLeft { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0%); } }
 
-        /* Modal */
         .modal-backdrop {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.86);
             backdrop-filter: blur(8px); display: none;
@@ -424,7 +417,6 @@
 </head>
 <body>
 
-    <!-- АВТОРИЗАЦИЯ -->
     <div class="login-wrap" id="loginBox">
         <h2 style="justify-content: center; margin-bottom: 8px;">🔒 Вход в Студию</h2>
         <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Введите пароль доступа</p>
@@ -433,7 +425,6 @@
         <p id="loginErr" style="color: var(--danger); font-size: 13px; margin-top: 12px; display: none;">Неверный пароль</p>
     </div>
 
-    <!-- ГЛАВНАЯ ПАНЕЛЬ -->
     <div class="admin-wrap" id="adminBox">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <h1>🎨 Визуальный конструктор и Вотермарки</h1>
@@ -454,7 +445,12 @@
                 </div>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 10px;">
-                <button class="btn btn-sm" onclick="loadFromServer()">📥 Загрузить данные с сервера</button>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-sm" onclick="loadFromServer()">📥 Загрузить данные с сервера</button>
+                    <button class="btn btn-sm" style="background: #1e7e46; border-color: #2ed573;" onclick="turboOptimizeExistingImages()" id="turboBtn">
+                        🚀 Ускорить сайт (Турбо-сжатие всех загруженных фото в 3 раза)
+                    </button>
+                </div>
                 <details style="font-size: 12.5px; color: var(--muted);">
                     <summary style="cursor: pointer; color: #fff;">🛡️ Генератор SHA-256 хеша для смены пароля</summary>
                     <div class="row" style="margin-top: 8px; min-width: 300px;">
@@ -541,7 +537,7 @@
 
             <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
                 <p style="font-size: 15.5px; font-weight: 700; margin-bottom: 4px;">➕ Нажмите сюда, чтобы добавить картинки на холст</p>
-                <p style="font-size: 12.5px; color: var(--muted);">Все изображения сохраняют 100% своих исходных пропорций без обрезки</p>
+                <p style="font-size: 12.5px; color: var(--muted);">Все изображения автоматически оптимизируются в легкий WebP без обрезки</p>
                 <input type="file" id="fileInput" multiple accept="image/*" style="display: none" onchange="handleFiles(this.files)">
             </div>
 
@@ -616,7 +612,6 @@
                 </div>
             </div>
 
-            <!-- ЖИВОЕ ПОЛЕ САЙТА 1:1 (ШАПКА + КНОПКА + ГАЛЕРЕЯ/КАРУСЕЛЬ) -->
             <div class="workspace-outer mode-move" id="workspaceOuter">
                 <div class="workspace-site-container" id="workspaceSiteContainer"></div>
             </div>
@@ -648,18 +643,19 @@
 
             <div class="row-3">
                 <div>
-                    <label>Заголовок сайта (Title)</label>
+                    <label>Заголовок сайта (оставьте пустым, чтобы скрыть)</label>
                     <input type="text" id="title" value="ToiletGonzo" oninput="updateState(); renderWorkspace();">
                 </div>
                 <div>
-                    <label>Подзаголовок (Subtitle)</label>
+                    <label>Подзаголовок (оставьте пустым, чтобы скрыть)</label>
                     <input type="text" id="subtitle" value="Official Page & Direct Contact" oninput="updateState(); renderWorkspace();">
                 </div>
                 <div>
-                    <label>Аватарка (Текст или Фото)</label>
+                    <label>Аватарка и Иконка вкладки (Favicon)</label>
                     <div style="display: flex; gap: 6px;">
                         <input type="text" id="avatarText" value="TG" style="width: 70px;" oninput="updateState(); renderWorkspace();">
                         <button class="btn btn-sm" style="flex:1;" onclick="document.getElementById('avatarInput').click()">Загрузить фото</button>
+                        <button class="btn btn-danger" onclick="state.avatarImage=''; updateState(); renderWorkspace();">✖</button>
                         <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatar(this.files)">
                     </div>
                 </div>
@@ -705,7 +701,6 @@
         </div>
     </div>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ СОХРАНЕНИЯ -->
     <div class="status-bar" id="statusBar" style="display: none;">
         <div class="status-inner">
             <span class="badge" id="saveStatus">Все изменения на холсте готовы к сохранению</span>
@@ -850,7 +845,6 @@
             const status = document.getElementById('saveStatus');
             status.textContent = "⏳ Загрузка данных с сервера...";
             try {
-                // First try direct raw fetch so even >1MB data.json loads cleanly
                 const rawRes = await fetch(`https://raw.githubusercontent.com/${repo}/main/data.json?v=${Date.now()}`, { cache: "no-store" });
                 if (rawRes.ok) {
                     const parsed = await rawRes.json();
@@ -878,10 +872,61 @@
             }
         }
 
+        // One-Click Turbo Optimizer for all existing images (reduces total payload by 3x)
+        async function turboOptimizeExistingImages() {
+            if (!state.images.length) {
+                alert("На холсте пока нет картинок для сжатия.");
+                return;
+            }
+            const btn = document.getElementById('turboBtn');
+            const status = document.getElementById('saveStatus');
+            btn.disabled = true;
+
+            let beforeBytes = JSON.stringify(state.images).length;
+
+            for (let i = 0; i < state.images.length; i++) {
+                status.textContent = `🚀 Турбо-сжатие фото ${i + 1} из ${state.images.length}...`;
+                const recompressed = await recompressDataUrl(state.images[i].src, 740, 0.75);
+                state.images[i].src = recompressed.dataUrl;
+                state.images[i].ar = recompressed.ar;
+            }
+
+            let afterBytes = JSON.stringify(state.images).length;
+            const savedPct = Math.max(0, Math.round((1 - afterBytes / beforeBytes) * 100));
+
+            renderWorkspace();
+            savePreviewCache();
+            btn.disabled = false;
+            status.style.color = "var(--success)";
+            status.textContent = `✅ Готово! Вес картинок уменьшен на ${savedPct}% (${(afterBytes / 1024 / 1024).toFixed(2)} МБ). Нажмите «Сохранить и опубликовать»!`;
+        }
+
+        function recompressDataUrl(src, maxWidth = 740, quality = 0.75) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    const ar = w / h;
+                    if (w > maxWidth) {
+                        h = Math.round((h * maxWidth) / w);
+                        w = maxWidth;
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve({ dataUrl: canvas.toDataURL('image/webp', quality), ar });
+                };
+                img.onerror = () => resolve({ dataUrl: src, ar: 0.75 });
+                img.src = src;
+            });
+        }
+
         function syncInputsFromState() {
-            document.getElementById('title').value = state.title || '';
-            document.getElementById('subtitle').value = state.subtitle || '';
-            document.getElementById('avatarText').value = state.avatarText || '';
+            document.getElementById('title').value = state.title ?? '';
+            document.getElementById('subtitle').value = state.subtitle ?? '';
+            document.getElementById('avatarText').value = state.avatarText ?? '';
             document.getElementById('buttonText').value = state.buttonText || 'Contact in Telegram';
             document.getElementById('telegramUrl').value = state.telegramUrl || 'https://t.me/toiletgonzo';
             document.getElementById('displayMode').value = state.displayMode || 'canvas';
@@ -918,7 +963,6 @@
             document.getElementById('wmLogoBox').style.display = wm.type === 'image' ? 'block' : 'none';
         }
 
-        // Interactive mode & dropdown handlers so every click immediately shows on the canvas!
         function onDisplayModeSelect(val) {
             state.displayMode = val;
             if (val === 'v-carousel') {
@@ -1032,7 +1076,8 @@
             outer.classList.toggle('mode-watermark', mode === 'watermark');
         }
 
-        function compressImage(file, maxWidth = 1080, quality = 0.82) {
+        // Optimized default upload size (760px, 0.76 WebP) so new uploads are 3x lighter and load fast
+        function compressImage(file, maxWidth = 760, quality = 0.76) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -1059,17 +1104,17 @@
 
         async function handleAvatar(files) {
             if (!files || !files[0]) return;
-            const res = await compressImage(files[0], 300, 0.86);
+            const res = await compressImage(files[0], 256, 0.85);
             state.avatarImage = res.dataUrl;
             updateState();
             renderWorkspace();
-            document.getElementById('saveStatus').textContent = "✅ Аватарка обновлена!";
+            document.getElementById('saveStatus').textContent = "✅ Аватарка и иконка сайта обновлены!";
         }
 
         async function handleFiles(files) {
             if (!files || !files.length) return;
             const status = document.getElementById('saveStatus');
-            status.textContent = "⏳ Добавление картинок на холст...";
+            status.textContent = "⏳ Оптимизация и добавление картинок...";
 
             for (const file of files) {
                 const { dataUrl, ar } = await compressImage(file);
@@ -1087,10 +1132,9 @@
             }
 
             autoArrange(state.galleryColumns || 2);
-            status.textContent = "✅ Картинки добавлены и разложены!";
+            status.textContent = "✅ Картинки добавлены и оптимизированы!";
         }
 
-        // FIXED & PERFECTED AUTO-ARRANGE (1, 2, 3, or 4 columns)
         function autoArrange(cols) {
             cols = parseInt(cols, 10) || 2;
             state.galleryColumns = cols;
@@ -1103,7 +1147,6 @@
 
             if (!state.images.length) return;
 
-            // If user was in horizontal carousel, switch to vertical carousel or canvas so columns apply
             if (state.displayMode === 'h-carousel') {
                 state.displayMode = 'v-carousel';
                 document.getElementById('displayMode').value = 'v-carousel';
@@ -1115,7 +1158,6 @@
             const stageRefWidth = 1000;
 
             state.images.forEach((img, idx) => {
-                // Pick the shortest column so cards pack tightly underneath each other with zero gaps
                 let targetCol = 0;
                 if (cols > 1) {
                     let minH = colHeights[0];
@@ -1132,7 +1174,6 @@
                 img.y = Math.round(colHeights[targetCol]);
                 img.z = idx + 1;
 
-                // Determine accurate aspect ratio from loaded DOM image if available
                 const domImg = document.querySelector(`.studio-item[data-idx="${idx}"] img.main-photo`);
                 const ar = (domImg && domImg.naturalWidth && domImg.naturalHeight)
                     ? (domImg.naturalWidth / domImg.naturalHeight)
@@ -1140,7 +1181,7 @@
                 img.ar = ar;
 
                 const pxW = (img.w / 100) * stageRefWidth;
-                const pxH = Math.round(pxW / ar) + 38 + 16; // image height + caption input + gap
+                const pxH = Math.round(pxW / ar) + 38 + 16;
                 colHeights[targetCol] += pxH;
             });
 
@@ -1281,7 +1322,7 @@
                         : escapeHtml(state.avatarText || 'TG');
                     return `
                         <div class="preview-header align-${state.headerAlign || 'center'}">
-                            <div class="preview-avatar">${avatarInner}</div>
+                            ${(state.avatarImage || state.avatarText) ? `<div class="preview-avatar">${avatarInner}</div>` : ''}
                             ${state.title ? `<div class="preview-title">${escapeHtml(state.title)}</div>` : ''}
                             ${state.subtitle ? `<div class="preview-subtitle">${escapeHtml(state.subtitle)}</div>` : ''}
                         </div>
@@ -1306,7 +1347,6 @@
                     const cols = Number(state.galleryColumns) || 2;
                     const speed = Math.max(10, Number(state.carouselSpeed) || 28);
 
-                    // 1. LIVE VERTICAL CAROUSEL IN ADMIN
                     if (mode === 'v-carousel') {
                         let colsHtml = '';
                         for (let c = 0; c < cols; c++) {
@@ -1332,7 +1372,6 @@
                         return `<div class="v-carousel-wrap cols-${cols}">${colsHtml}</div>`;
                     }
 
-                    // 2. LIVE HORIZONTAL CAROUSEL IN ADMIN
                     if (mode === 'h-carousel') {
                         let allEntries = state.images.map((item, idx) => ({ item, idx }));
                         let baseSet = [...allEntries];
@@ -1348,7 +1387,6 @@
                         `;
                     }
 
-                    // 3. SMART FLOW ROWS
                     if (mode === 'flow') {
                         return `
                             <div class="workspace-stage" id="workspaceStage">
@@ -1359,7 +1397,6 @@
                         `;
                     }
 
-                    // 4. FREEFORM 1:1 CANVAS
                     return `
                         <div class="workspace-stage" id="workspaceStage">
                             <div class="snap-guide-v" id="snapGuideV"></div>
@@ -1383,7 +1420,6 @@
             }, 40);
         }
 
-        let initialArLoadedCount = 0;
         function onStudioPhotoLoad(idx, imgEl) {
             if (imgEl.naturalWidth && imgEl.naturalHeight && state.images[idx]) {
                 state.images[idx].ar = imgEl.naturalWidth / imgEl.naturalHeight;
@@ -1461,7 +1497,6 @@
             if (e.button !== 0) return;
             selectImage(idx);
 
-            // Watermark Click Mode works in ALL display modes (even inside paused carousel!)
             if (interactionMode === 'watermark' || e.altKey) {
                 e.preventDefault();
                 const innerEl = cardEl.querySelector('.studio-item-inner');
@@ -1718,6 +1753,29 @@
             return btoa(unescape(encodeURIComponent(str)));
         }
 
+        async function putFileToGitHub(repo, token, fileName, contentObj, sha) {
+            const body = {
+                message: `Update ${fileName}`,
+                content: utf8ToBase64(JSON.stringify(contentObj))
+            };
+            if (sha) body.sha = sha;
+
+            const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${fileName}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Accept": "application/vnd.github+json",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (!putRes.ok) {
+                const errData = await putRes.json();
+                throw new Error(errData.message || `Ошибка сохранения ${fileName}`);
+            }
+        }
+
         async function publishToServer() {
             updateState();
             saveCreds();
@@ -1733,45 +1791,38 @@
 
             btn.disabled = true;
             status.style.color = "var(--text)";
-            status.textContent = "⏳ Отправка раскладки и вотермарок на сервер...";
+            status.textContent = "⏳ Сохранение быстрой версии первого экрана и полной базы...";
 
             try {
-                let sha = null;
-                // Fetch root directory list so SHA is retrieved even when data.json > 1MB
+                let shaFull = null;
+                let shaFast = null;
+
                 const dirRes = await fetch(`https://api.github.com/repos/${repo}/contents/`, {
                     headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github+json" },
                     cache: "no-store"
                 });
                 if (dirRes.ok) {
                     const files = await dirRes.json();
-                    const found = Array.isArray(files) && files.find(f => f.name === 'data.json');
-                    if (found) sha = found.sha;
+                    if (Array.isArray(files)) {
+                        const foundFull = files.find(f => f.name === 'data.json');
+                        const foundFast = files.find(f => f.name === 'data-fast.json');
+                        if (foundFull) shaFull = foundFull.sha;
+                        if (foundFast) shaFast = foundFast.sha;
+                    }
                 }
 
-                const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
-                const body = {
-                    message: "Update visual canvas layout",
-                    content: utf8ToBase64(JSON.stringify(state, null, 2))
+                // 1. Сохраняем легкий пакет первого экрана (первые 6 фото) для мгновенного открытия сайта
+                const fastState = {
+                    ...state,
+                    images: (state.images || []).slice(0, 6)
                 };
-                if (sha) body.sha = sha;
+                await putFileToGitHub(repo, token, 'data-fast.json', fastState, shaFast);
 
-                const putRes = await fetch(apiUrl, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Accept": "application/vnd.github+json",
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                if (!putRes.ok) {
-                    const errData = await putRes.json();
-                    throw new Error(errData.message || "Ошибка API");
-                }
+                // 2. Сохраняем полную базу всех фотографий
+                await putFileToGitHub(repo, token, 'data.json', state, shaFull);
 
                 status.style.color = "var(--success)";
-                status.textContent = "✅ Опубликовано! На сайте всё расположено 1-в-1 как на вашем холсте.";
+                status.textContent = "✅ Опубликовано! Быстрый пакет (data-fast.json) и полная база активны.";
             } catch (err) {
                 status.style.color = "var(--danger)";
                 status.textContent = "❌ Ошибка: " + err.message;
