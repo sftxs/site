@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | ToiletGonzo</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title> Control Panel</title>
     <style>
         :root {
             --bg: #0d0d12;
@@ -87,7 +88,6 @@
         .btn-danger { background: rgba(255, 71, 87, 0.14); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 6px 10px; font-size: 12px; }
         .btn-sm { padding: 6px 10px; font-size: 12px; background: #232332; }
 
-        /* Order list */
         .order-item {
             display: flex;
             align-items: center;
@@ -101,7 +101,6 @@
         }
         .order-controls { display: flex; gap: 6px; }
 
-        /* Upload & Drag-and-Drop Image Grid */
         .upload-zone {
             border: 2px dashed var(--border);
             border-radius: 14px;
@@ -172,38 +171,43 @@
 </head>
 <body>
 
-    <!-- ОКНО ВХОДА -->
     <div class="login-wrap" id="loginBox">
-        <h2 style="justify-content: center; margin-bottom: 8px;">🔒 Вход в Админку</h2>
-        <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Введите пароль администратора</p>
+        <h2 style="justify-content: center; margin-bottom: 8px;">🔒 Авторизация</h2>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Введите пароль доступа</p>
         <input type="password" id="passInput" placeholder="Пароль..." onkeydown="if(event.key==='Enter') checkLogin()">
         <button class="btn" style="width: 100%; margin-top: 14px;" onclick="checkLogin()">Войти</button>
         <p id="loginErr" style="color: var(--danger); font-size: 13px; margin-top: 12px; display: none;">Неверный пароль</p>
     </div>
 
-    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
     <div class="admin-wrap" id="adminBox">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-            <h1>⚙️ Админка toiletgonzo.vip</h1>
-            <a href="/" target="_blank" class="btn btn-sm">Открыть сайт в новой вкладке ↗</a>
+            <h1>⚙️ Панель управления</h1>
+            <a href="./" target="_blank" class="btn btn-sm">Открыть сайт ↗</a>
         </div>
 
-        <!-- 1. GitHub API -->
+        <!-- 1. Настройки подключения (Хранятся только локально в вашем браузере) -->
         <div class="card">
-            <h2>🔑 Подключение к серверу GitHub</h2>
+            <h2>🔑 Параметры синхронизации (хранятся только в вашем браузере)</h2>
             <div class="row">
                 <div>
-                    <label>Репозиторий (владелец/имя)</label>
-                    <input type="text" id="ghRepo" value="sftxs/site">
+                    <label>Целевой репозиторий (формат: логин/репозиторий)</label>
+                    <input type="text" id="ghRepo" placeholder="Укажите логин/репозиторий...">
                 </div>
                 <div>
-                    <label>GitHub Personal Access Token (сохраняется в браузере)</label>
+                    <label>Токен доступа (Personal Access Token)</label>
                     <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx...">
                 </div>
             </div>
+            <details style="margin-top: 14px; font-size: 13px; color: var(--muted);">
+                <summary style="cursor: pointer; color: #fff;">🛡️ Зашифровать новый пароль для входа (Генератор SHA-256)</summary>
+                <div class="row" style="margin-top: 8px;">
+                    <input type="text" id="newPassGen" placeholder="Введите желаемый пароль..." oninput="genHash(this.value)">
+                    <input type="text" id="newHashOut" readonly placeholder="Скопируйте этот SHA-256 хеш в ADMIN_PASSWORD_HASH">
+                </div>
+            </details>
         </div>
 
-        <!-- 2. Настройки Галереи, Столбцов и Карусели -->
+        <!-- 2. Настройки Галереи и Карусели -->
         <div class="card">
             <h2>🎠 Режим отображения картинок и Карусели</h2>
             <div class="row">
@@ -253,7 +257,6 @@
                 </div>
             </div>
 
-            <!-- Настройки вращения для каруселей -->
             <div id="carouselSettingsBox" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); display: none;">
                 <div class="row-3">
                     <div>
@@ -287,7 +290,7 @@
             </h2>
             <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
                 <p style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">➕ Нажмите сюда, чтобы загрузить картинки</p>
-                <p style="font-size: 13px; color: var(--muted);">Можно выделить сразу много фотографий • Перетаскивайте карточки мышкой, чтобы менять их местами!</p>
+                <p style="font-size: 13px; color: var(--muted);">Можно выделить сразу много фотографий • Перетаскивайте карточки мышкой!</p>
                 <input type="file" id="fileInput" multiple accept="image/*" style="display: none" onchange="handleFiles(this.files)">
             </div>
 
@@ -297,9 +300,6 @@
         <!-- 4. Порядок блоков -->
         <div class="card">
             <h2>📐 Порядок блоков на странице</h2>
-            <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
-                Меняйте расположение кнопки Telegram, шапки и галереи картинок:
-            </p>
             <div id="layoutList"></div>
         </div>
 
@@ -336,7 +336,7 @@
                 <div>
                     <label>Анимация пульсации кнопки</label>
                     <select id="buttonPulse" onchange="updateState()">
-                        <option value="true">✨ Включена (Привлекает внимание)</option>
+                        <option value="true">✨ Включена</option>
                         <option value="false">Выключена</option>
                     </select>
                 </div>
@@ -350,7 +350,7 @@
                     <input type="text" id="title" value="ToiletGonzo" oninput="updateState()">
                 </div>
                 <div>
-                    <label>Подзаголовок (Subtitle на английском)</label>
+                    <label>Подзаголовок (Subtitle)</label>
                     <input type="text" id="subtitle" value="Official Page & Direct Contact" oninput="updateState()">
                 </div>
             </div>
@@ -364,11 +364,11 @@
                     </select>
                 </div>
                 <div>
-                    <label>Текст аватарки (если нет фото)</label>
+                    <label>Текст аватарки</label>
                     <input type="text" id="avatarText" value="TG" oninput="updateState()">
                 </div>
                 <div>
-                    <label>Картинка на аватарку (по желанию)</label>
+                    <label>Картинка на аватарку</label>
                     <div style="display: flex; gap: 6px; margin-top: 4px;">
                         <button class="btn btn-sm" style="flex:1;" onclick="document.getElementById('avatarInput').click()">Загрузить фото</button>
                         <button class="btn btn-danger" onclick="state.avatarImage=''; updateState();">Сброс</button>
@@ -382,17 +382,38 @@
     <div class="status-bar" id="statusBar" style="display: none;">
         <div class="status-inner">
             <span class="badge" id="saveStatus">Готово к сохранению</span>
-            <button class="btn btn-success" onclick="publishToGitHub()" id="pubBtn">
-                💾 Сохранить и опубликовать на сайт
+            <button class="btn btn-success" onclick="publishToServer()" id="pubBtn">
+                💾 Сохранить и опубликовать
             </button>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // ПАРОЛЬ ОТ АДМИНКИ
-        // ==========================================
-        const ADMIN_PASSWORD = "admin";
+        // =========================================================================
+        // SHA-256 ХЕШ ПАРОЛЯ (Вместо открытого пароля в коде!)
+        // По умолчанию стоит хеш от слова "admin"
+        // =========================================================================
+        const ADMIN_PASSWORD_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+
+        async function sha256(str) {
+            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+        }
+
+        async function genHash(val) {
+            document.getElementById('newHashOut').value = val ? await sha256(val) : "";
+        }
+
+        async function checkLogin() {
+            const val = document.getElementById('passInput').value;
+            const hash = await sha256(val);
+            if (hash === ADMIN_PASSWORD_HASH) {
+                sessionStorage.setItem('tg_admin_auth', '1');
+                showAdmin();
+            } else {
+                document.getElementById('loginErr').style.display = 'block';
+            }
+        }
 
         let state = {
             title: "ToiletGonzo",
@@ -426,16 +447,6 @@
             button: "✈️ Кнопка Contact in Telegram",
             gallery: "🖼️ Галерея / Карусель картинок"
         };
-
-        function checkLogin() {
-            const val = document.getElementById('passInput').value;
-            if (val === ADMIN_PASSWORD) {
-                sessionStorage.setItem('tg_admin_auth', '1');
-                showAdmin();
-            } else {
-                document.getElementById('loginErr').style.display = 'block';
-            }
-        }
 
         async function showAdmin() {
             document.getElementById('loginBox').style.display = 'none';
@@ -611,14 +622,14 @@
                     <div class="img-item-body">
                         <input type="text" placeholder="Подпись (необязательно)" value="${(img.caption || '').replace(/"/g, '&quot;')}" oninput="state.images[${i}].caption = this.value; updateState();">
                         <select onchange="state.images[${i}].pos = this.value; renderImages(); updateState();" style="padding: 7px 10px; font-size: 12px;">
-                            <option value="top" ${img.pos === 'top' ? 'selected' : ''}>Фокус обрезки: Верх (Лицо)</option>
+                            <option value="top" ${img.pos === 'top' ? 'selected' : ''}>Фокус обрезки: Верх</option>
                             <option value="center" ${(!img.pos || img.pos === 'center') ? 'selected' : ''}>Фокус обрезки: Центр</option>
-                            <option value="bottom" ${img.pos === 'bottom' ? 'selected' : ''}>Фокус обрезки: Низ (Вотермарка)</option>
+                            <option value="bottom" ${img.pos === 'bottom' ? 'selected' : ''}>Фокус обрезки: Низ</option>
                         </select>
                         <div class="img-actions">
                             <div>
-                                <button class="btn btn-sm" title="Влево" onclick="moveImg(${i}, -1)" ${i === 0 ? 'disabled' : ''}>⬅</button>
-                                <button class="btn btn-sm" title="Вправо" onclick="moveImg(${i}, 1)" ${i === state.images.length - 1 ? 'disabled' : ''}>➡</button>
+                                <button class="btn btn-sm" onclick="moveImg(${i}, -1)" ${i === 0 ? 'disabled' : ''}>⬅</button>
+                                <button class="btn btn-sm" onclick="moveImg(${i}, 1)" ${i === state.images.length - 1 ? 'disabled' : ''}>➡</button>
                             </div>
                             <button class="btn btn-danger" onclick="removeImg(${i})">🗑</button>
                         </div>
@@ -627,7 +638,6 @@
             `).join('');
         }
 
-        // Drag and Drop Handlers
         function onDragStart(e, index) {
             draggedIndex = index;
             e.currentTarget.classList.add('dragging');
@@ -636,13 +646,9 @@
         function onDragOver(e, index) {
             e.preventDefault();
             e.dataTransfer.dropEffect = 'move';
-            if (index !== draggedIndex) {
-                e.currentTarget.classList.add('drag-over');
-            }
+            if (index !== draggedIndex) e.currentTarget.classList.add('drag-over');
         }
-        function onDragLeave(e) {
-            e.currentTarget.classList.remove('drag-over');
-        }
+        function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
         function onDrop(e, dropIndex) {
             e.preventDefault();
             e.currentTarget.classList.remove('drag-over');
@@ -686,15 +692,15 @@
             return btoa(unescape(encodeURIComponent(str)));
         }
 
-        async function publishToGitHub() {
+        async function publishToServer() {
             updateState();
             const token = document.getElementById('ghToken').value.trim();
             const repo = document.getElementById('ghRepo').value.trim();
             const status = document.getElementById('saveStatus');
             const btn = document.getElementById('pubBtn');
 
-            if (!token) {
-                alert("Вставьте ваш GitHub Personal Access Token в верхнем блоке!");
+            if (!token || !repo) {
+                alert("Укажите целевой репозиторий и токен в верхнем блоке!");
                 return;
             }
 
@@ -703,7 +709,7 @@
 
             btn.disabled = true;
             status.style.color = "var(--text)";
-            status.textContent = "⏳ Отправка изменений на сервер GitHub...";
+            status.textContent = "⏳ Отправка изменений...";
 
             try {
                 const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
@@ -723,7 +729,7 @@
                 }
 
                 const body = {
-                    message: "Update site via Admin Panel",
+                    message: "Update content",
                     content: utf8ToBase64(JSON.stringify(state, null, 2))
                 };
                 if (sha) body.sha = sha;
@@ -740,11 +746,11 @@
 
                 if (!putRes.ok) {
                     const errData = await putRes.json();
-                    throw new Error(errData.message || "Ошибка GitHub API");
+                    throw new Error(errData.message || "Ошибка API");
                 }
 
                 status.style.color = "var(--success)";
-                status.textContent = "✅ Опубликовано! Откройте сайт — все изменения уже работают.";
+                status.textContent = "✅ Опубликовано!";
             } catch (err) {
                 status.style.color = "var(--danger)";
                 status.textContent = "❌ Ошибка: " + err.message;
