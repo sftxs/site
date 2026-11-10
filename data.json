@@ -10,7 +10,7 @@
   "buttonAlign": "center",
   "buttonWidth": "auto",
   "buttonFloating": false,
-  "galleryColumns": 1,
+  "galleryColumns": 2,
   "layoutOrder": [
     "header",
     "button",
