@@ -44,20 +44,13 @@
         /* Header */
         .header-block { display: flex; flex-direction: column; gap: 10px; }
         .avatar {
-            width: 92px;
-            height: 92px;
-            border-radius: 50%;
+            width: 92px; height: 92px; border-radius: 50%;
             background: linear-gradient(135deg, #6c5ce7, #a29bfe);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: 800;
             box-shadow: 0 10px 28px rgba(108, 92, 231, 0.38);
-            overflow: hidden;
-            margin-bottom: 4px;
-            border: 2px solid rgba(255, 255, 255, 0.14);
-            flex-shrink: 0;
+            overflow: hidden; margin-bottom: 4px;
+            border: 2px solid rgba(255, 255, 255, 0.14); flex-shrink: 0;
         }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .title { font-size: 28px; font-weight: 800; letter-spacing: -0.4px; }
@@ -66,21 +59,13 @@
         /* Telegram Button */
         .button-block { display: flex; flex-direction: column; }
         .tg-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 12px;
             background: linear-gradient(135deg, #2AABEE, #1e96c8);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 16px 34px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 17px;
+            color: #ffffff; text-decoration: none; padding: 16px 34px; border-radius: 16px;
+            font-weight: 700; font-size: 17px;
             box-shadow: 0 8px 25px rgba(34, 158, 217, 0.42);
             transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer;
         }
         .tg-btn:hover {
             transform: translateY(-2px);
@@ -95,13 +80,8 @@
             100% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0), 0 8px 25px rgba(34, 158, 217, 0.4); }
         }
         .floating-tg {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 95;
-            width: calc(100% - 32px);
-            max-width: 420px;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 95; width: calc(100% - 32px); max-width: 420px;
         }
         .floating-tg .tg-btn { width: 100%; }
 
@@ -115,123 +95,101 @@
             transition: transform 0.25s ease, border-color 0.25s ease;
             position: relative;
         }
-        .gallery-card:hover {
-            border-color: rgba(255, 255, 255, 0.26);
-        }
+        .gallery-card:hover { border-color: rgba(255, 255, 255, 0.26); }
         .gallery-card .img-wrap {
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-            line-height: 0;
-        }
-        .gallery-card img {
-            width: 100%;
-            height: auto;
-            display: block;
+            width: 100%; position: relative; overflow: hidden; line-height: 0;
             cursor: pointer;
-            user-select: none;
-            -webkit-user-drag: none;
+        }
+        .gallery-card img.main-photo {
+            width: 100%; height: auto; display: block;
+            user-select: none; -webkit-user-drag: none;
         }
         .gallery-caption {
-            padding: 10px 14px;
-            font-size: 13.5px;
-            color: #d6d8e4;
-            text-align: center;
-            background: rgba(18, 18, 26, 0.96);
-            border-top: 1px solid var(--border);
-            line-height: 1.4;
+            padding: 10px 14px; font-size: 13.5px; color: #d6d8e4;
+            text-align: center; background: rgba(18, 18, 26, 0.96);
+            border-top: 1px solid var(--border); line-height: 1.4;
+        }
+
+        /* Watermark Overlay */
+        .wm-live {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 12;
+            white-space: nowrap;
+            font-weight: 900;
+            line-height: 1;
+            user-select: none;
+        }
+        .wm-live.style-outline {
+            text-shadow:
+                -1.5px -1.5px 0 rgba(0,0,0,0.92),
+                 1.5px -1.5px 0 rgba(0,0,0,0.92),
+                -1.5px  1.5px 0 rgba(0,0,0,0.92),
+                 1.5px  1.5px 0 rgba(0,0,0,0.92),
+                 0px 2px 6px rgba(0,0,0,0.85);
+        }
+        .wm-live.style-pill {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 0.35em 0.65em;
+            border-radius: 0.45em;
+        }
+        .wm-live.style-shadow {
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.95);
         }
 
         /* 1. FREEFORM 1:1 CANVAS STAGE */
-        .free-canvas-stage {
-            position: relative;
-            width: 100%;
-            min-height: 100px;
-        }
-        .free-canvas-item {
-            position: absolute;
-            transform-origin: top left;
-        }
-        .free-canvas-item:hover {
-            z-index: 50 !important;
-        }
+        .free-canvas-stage { position: relative; width: 100%; min-height: 100px; }
+        .free-canvas-item { position: absolute; transform-origin: top left; }
+        .free-canvas-item:hover { z-index: 50 !important; }
 
-        /* 2. SMART FLEX FLOW (Left-to-Right, Custom Per-Image Width, No Crop) */
+        /* 2. SMART FLEX FLOW */
         .smart-flow-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--gap);
-            width: 100%;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-wrap: wrap; gap: var(--gap);
+            width: 100%; justify-content: center; align-items: flex-start;
         }
-        .smart-flow-item {
-            flex: 0 0 auto;
-            transition: transform 0.25s ease;
-        }
+        .smart-flow-item { flex: 0 0 auto; transition: transform 0.25s ease; }
         .smart-flow-item:hover { transform: translateY(-3px); }
 
         @media (max-width: 600px) {
             .mobile-stack .free-canvas-stage {
-                height: auto !important;
-                display: flex;
-                flex-direction: column;
-                gap: 14px;
+                height: auto !important; display: flex; flex-direction: column; gap: 14px;
             }
             .mobile-stack .free-canvas-item {
-                position: relative !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
+                position: relative !important; left: 0 !important; top: 0 !important; width: 100% !important;
             }
-            .mobile-stack .smart-flow-item {
-                width: 100% !important;
-            }
+            .mobile-stack .smart-flow-item { width: 100% !important; }
         }
 
         /* 3. VERTICAL & HORIZONTAL CAROUSELS */
         .v-carousel-wrap {
-            display: grid;
-            gap: var(--gap);
-            width: 100%;
-            height: 660px;
-            overflow: hidden;
-            position: relative;
+            display: grid; gap: var(--gap); width: 100%; height: 680px;
+            overflow: hidden; position: relative;
             mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
         }
-        .v-carousel-wrap.cols-1 { grid-template-columns: 1fr; }
+        .v-carousel-wrap.cols-1 { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
         .v-carousel-wrap.cols-2 { grid-template-columns: repeat(2, 1fr); }
         .v-carousel-wrap.cols-3 { grid-template-columns: repeat(3, 1fr); }
         .v-carousel-wrap.cols-4 { grid-template-columns: repeat(4, 1fr); }
         .v-col { overflow: hidden; position: relative; height: 100%; }
         .v-track {
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap);
-            padding-bottom: var(--gap);
-            will-change: transform;
+            display: flex; flex-direction: column; gap: var(--gap);
+            padding-bottom: var(--gap); will-change: transform;
         }
         .v-carousel-wrap:hover .v-track { animation-play-state: paused !important; }
         @keyframes scrollDown { 0% { transform: translateY(-50%); } 100% { transform: translateY(0%); } }
         @keyframes scrollUp { 0% { transform: translateY(0%); } 100% { transform: translateY(-50%); } }
 
         .h-carousel-wrap {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            gap: var(--gap);
+            width: 100%; overflow: hidden; position: relative;
+            display: flex; flex-direction: column; gap: var(--gap);
             mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
             -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
         }
         .h-row {
-            display: flex;
-            width: max-content;
-            gap: var(--gap);
-            align-items: center;
-            will-change: transform;
+            display: flex; width: max-content; gap: var(--gap);
+            align-items: center; will-change: transform;
         }
         .h-carousel-wrap:hover .h-row { animation-play-state: paused !important; }
         .h-row .gallery-card { width: 280px; flex-shrink: 0; }
@@ -246,22 +204,13 @@
 
         /* Lightbox */
         .lightbox {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(10px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            padding: 20px;
-            cursor: zoom-out;
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px); display: none;
+            align-items: center; justify-content: center; z-index: 999; padding: 20px; cursor: zoom-out;
         }
         .lightbox.active { display: flex; }
         .lightbox img {
-            max-width: 95vw;
-            max-height: 92vh;
-            border-radius: 12px;
+            max-width: 95vw; max-height: 92vh; border-radius: 12px;
             box-shadow: 0 15px 50px rgba(0, 0, 0, 0.85);
         }
     </style>
@@ -303,9 +252,9 @@
             buttonWidth: "auto",
             buttonFloating: false,
             buttonPulse: true,
-            displayMode: "canvas",     // 'canvas' (1:1 Freeform) | 'flow' (Smart Rows) | 'v-carousel' | 'h-carousel'
-            mobileMode: "exact",       // 'exact' (1:1 scaled canvas) | 'stack' (vertical feed on small phones)
-            galleryColumns: 3,
+            displayMode: "canvas",
+            mobileMode: "exact",
+            galleryColumns: 2,
             carouselDirection: "down",
             carouselSpeed: 28,
             hCarouselRows: 1,
@@ -316,7 +265,6 @@
         };
 
         let activeConfig = DEFAULT_CONFIG;
-        let cachedLogoImg = null;
 
         function escapeHtml(str) {
             return String(str || '').replace(/[&<>"']/g, m => ({
@@ -324,117 +272,55 @@
             }[m]));
         }
 
-        function handleImageClick(imgEl) {
+        function buildWatermarkOverlayHtml(img, gWm) {
+            const wm = img.wm || {};
+            const isEnabled = wm.enabled !== undefined ? wm.enabled : gWm.enabled;
+            if (!isEnabled) return '';
+
+            const x = wm.x !== undefined ? wm.x : (gWm.defaultX ?? 50);
+            const y = wm.y !== undefined ? wm.y : (gWm.defaultY ?? 88);
+            const sizePct = wm.size || gWm.size || 24;
+            const opacity = wm.opacity ?? gWm.opacity ?? 0.85;
+            const angle = wm.angle ?? gWm.angle ?? 0;
+
+            if (gWm.type === 'image' && gWm.logoSrc) {
+                return `
+                    <img class="wm-live" src="${gWm.logoSrc}"
+                         style="left:${x}%; top:${y}%; width:${sizePct}%; opacity:${opacity}; transform: translate(-50%, -50%) rotate(${angle}deg);">
+                `;
+            }
+
+            const text = (wm.customText !== undefined && wm.customText !== '') ? wm.customText : (gWm.text || '');
+            if (!text.trim()) return '';
+
+            return `
+                <div class="wm-live style-${gWm.style || 'outline'}"
+                     data-size="${sizePct}"
+                     style="left:${x}%; top:${y}%; color:${gWm.color || '#ffffff'}; opacity:${opacity}; transform: translate(-50%, -50%) rotate(${angle}deg);">
+                    ${escapeHtml(text)}
+                </div>
+            `;
+        }
+
+        async function handleImageClick(idx) {
             if (activeConfig.imageClickAction === 'telegram' && activeConfig.telegramUrl) {
                 window.open(activeConfig.telegramUrl, '_blank', 'noopener');
                 return;
             }
+            const imgObj = activeConfig.images[idx];
+            if (!imgObj) return;
             const lb = document.getElementById('lightbox');
-            document.getElementById('lightbox-img').src = imgEl.src;
+            document.getElementById('lightbox-img').src = imgObj.src;
             lb.classList.add('active');
         }
 
-        // Bake watermark directly into image pixels via HTML5 Canvas
-        async function bakeWatermarkToDataUrl(imgObj, globalWm) {
-            const wm = imgObj.wm || {};
-            const isEnabled = wm.enabled !== undefined ? wm.enabled : globalWm.enabled;
-            if (!isEnabled) return imgObj.src;
-
-            const type = globalWm.type || 'text';
-            const text = (wm.customText !== undefined && wm.customText !== '') ? wm.customText : (globalWm.text || '');
-            if (type === 'text' && !text.trim()) return imgObj.src;
-            if (type === 'image' && !globalWm.logoSrc) return imgObj.src;
-
-            return new Promise((resolve) => {
-                const baseImg = new Image();
-                baseImg.crossOrigin = "anonymous";
-                baseImg.onload = async () => {
-                    const canvas = document.createElement('canvas');
-                    const w = baseImg.naturalWidth || baseImg.width;
-                    const h = baseImg.naturalHeight || baseImg.height;
-                    canvas.width = w;
-                    canvas.height = h;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(baseImg, 0, 0, w, h);
-
-                    const xPct = wm.x !== undefined ? Number(wm.x) : Number(globalWm.defaultX ?? 50);
-                    const yPct = wm.y !== undefined ? Number(wm.y) : Number(globalWm.defaultY ?? 88);
-                    const sizePct = Number(wm.size || globalWm.size || 24);
-                    const opacity = Number(wm.opacity ?? globalWm.opacity ?? 0.85);
-                    const angle = Number(wm.angle ?? globalWm.angle ?? 0);
-
-                    const cx = (xPct / 100) * w;
-                    const cy = (yPct / 100) * h;
-
-                    ctx.save();
-                    ctx.translate(cx, cy);
-                    ctx.rotate((angle * Math.PI) / 180);
-                    ctx.globalAlpha = Math.max(0.05, Math.min(1, opacity));
-
-                    if (type === 'image' && globalWm.logoSrc) {
-                        if (!cachedLogoImg || cachedLogoImg.dataset.src !== globalWm.logoSrc) {
-                            cachedLogoImg = new Image();
-                            cachedLogoImg.dataset.src = globalWm.logoSrc;
-                            await new Promise(r => { cachedLogoImg.onload = r; cachedLogoImg.onerror = r; cachedLogoImg.src = globalWm.logoSrc; });
-                        }
-                        if (cachedLogoImg.width > 0) {
-                            const targetW = w * (sizePct / 100);
-                            const targetH = targetW * (cachedLogoImg.height / cachedLogoImg.width);
-                            ctx.drawImage(cachedLogoImg, -targetW / 2, -targetH / 2, targetW, targetH);
-                        }
-                    } else {
-                        const fontSize = Math.max(12, Math.round(w * (sizePct / 100) * 0.16));
-                        ctx.font = `900 ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif`;
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-
-                        const styleMode = globalWm.style || 'outline';
-                        if (styleMode === 'pill') {
-                            const metrics = ctx.measureText(text);
-                            const padX = fontSize * 0.65;
-                            const padY = fontSize * 0.38;
-                            const boxW = metrics.width + padX * 2;
-                            const boxH = fontSize + padY * 2;
-                            ctx.fillStyle = 'rgba(0, 0, 0, 0.68)';
-                            ctx.beginPath();
-                            ctx.roundRect(-boxW / 2, -boxH / 2, boxW, boxH, fontSize * 0.45);
-                            ctx.fill();
-                        } else if (styleMode === 'outline') {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
-                            ctx.shadowBlur = Math.max(4, fontSize * 0.2);
-                            ctx.lineWidth = Math.max(2, fontSize * 0.14);
-                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.88)';
-                            ctx.lineJoin = 'round';
-                            ctx.strokeText(text, 0, 0);
-                        } else if (styleMode === 'shadow') {
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.92)';
-                            ctx.shadowBlur = Math.max(6, fontSize * 0.3);
-                            ctx.shadowOffsetX = 2;
-                            ctx.shadowOffsetY = 2;
-                        }
-
-                        ctx.fillStyle = globalWm.color || '#ffffff';
-                        ctx.fillText(text, 0, 0);
-                    }
-
-                    ctx.restore();
-                    try {
-                        resolve(canvas.toDataURL('image/webp', 0.92));
-                    } catch (e) {
-                        resolve(imgObj.src);
-                    }
-                };
-                baseImg.onerror = () => resolve(imgObj.src);
-                baseImg.src = imgObj.src;
-            });
-        }
-
-        function buildCardInnerHtml(img, idx) {
+        function buildCardInnerHtml(img, idx, gWm) {
             const captionHtml = img.caption ? `<div class="gallery-caption">${escapeHtml(img.caption)}</div>` : '';
             return `
                 <div class="gallery-card">
-                    <div class="img-wrap">
-                        <img data-idx="${idx}" src="${img.src}" alt="${escapeHtml(img.caption || '')}" onclick="handleImageClick(this)">
+                    <div class="img-wrap" onclick="handleImageClick(${idx})">
+                        <img class="main-photo" data-idx="${idx}" src="${img.src}" alt="${escapeHtml(img.caption || '')}" onload="onSiteImgLoad()">
+                        ${buildWatermarkOverlayHtml(img, gWm)}
                     </div>
                     ${captionHtml}
                 </div>
@@ -443,25 +329,39 @@
 
         function updateFreeCanvasScale() {
             const stage = document.getElementById('freeCanvasStage');
-            if (!stage) return;
-            const stageW = stage.clientWidth || 1000;
-            const scale = stageW / 1000;
-            let maxBottom = 120;
+            if (stage) {
+                const stageW = stage.clientWidth || 1000;
+                const scale = stageW / 1000;
+                let maxBottom = 120;
 
-            stage.querySelectorAll('.free-canvas-item').forEach(item => {
-                const rawY = parseFloat(item.dataset.y) || 0;
-                const topPx = rawY * scale;
-                item.style.top = `${topPx}px`;
-                const h = item.offsetHeight || 200;
-                if (topPx + h > maxBottom) maxBottom = topPx + h;
+                stage.querySelectorAll('.free-canvas-item').forEach(item => {
+                    const rawY = parseFloat(item.dataset.y) || 0;
+                    const topPx = rawY * scale;
+                    item.style.top = `${topPx}px`;
+                    const h = item.offsetHeight || 200;
+                    if (topPx + h > maxBottom) maxBottom = topPx + h;
+                });
+
+                stage.style.height = `${Math.ceil(maxBottom + 20)}px`;
+            }
+
+            document.querySelectorAll('.img-wrap').forEach(wrap => {
+                const w = wrap.clientWidth || 300;
+                wrap.querySelectorAll('.wm-live[data-size]').forEach(el => {
+                    const sizePct = parseFloat(el.dataset.size) || 24;
+                    const px = Math.max(10, Math.round(w * (sizePct / 100) * 0.16));
+                    el.style.fontSize = `${px}px`;
+                });
             });
+        }
 
-            stage.style.height = `${Math.ceil(maxBottom + 20)}px`;
+        function onSiteImgLoad() {
+            updateFreeCanvasScale();
         }
 
         window.addEventListener('resize', updateFreeCanvasScale);
 
-        async function renderSite(cfg) {
+        function renderSite(cfg) {
             const config = {
                 ...DEFAULT_CONFIG,
                 ...cfg,
@@ -528,51 +428,48 @@
                     if (!imgs.length) return null;
 
                     const mode = config.displayMode || 'canvas';
-                    const cols = Number(config.galleryColumns) || 3;
+                    const cols = Number(config.galleryColumns) || 2;
                     const speed = Math.max(8, Number(config.carouselSpeed) || 28);
 
-                    // 1. FREEFORM 1:1 CANVAS MODE
                     if (mode === 'canvas') {
                         const el = document.createElement('div');
                         el.className = 'block free-canvas-stage';
                         el.id = 'freeCanvasStage';
                         el.innerHTML = imgs.map((img, i) => {
-                            const x = img.x !== undefined ? img.x : ((i % 2) * 50);
+                            const x = img.x !== undefined ? img.x : ((i % 2) * 51.5);
                             const y = img.y !== undefined ? img.y : (Math.floor(i / 2) * 380);
-                            const w = img.w !== undefined ? img.w : 46;
+                            const w = img.w !== undefined ? img.w : 48.5;
                             const z = img.z !== undefined ? img.z : (i + 1);
                             return `
                                 <div class="free-canvas-item" data-y="${y}" style="left: ${x}%; width: ${w}%; z-index: ${z};">
-                                    ${buildCardInnerHtml(img, i)}
+                                    ${buildCardInnerHtml(img, i, config.watermark)}
                                 </div>
                             `;
                         }).join('');
                         return el;
                     }
 
-                    // 2. SMART FLEX FLOW (Left-to-right custom sizes, zero crop)
                     if (mode === 'flow' || mode === 'grid' || mode === 'masonry') {
                         const el = document.createElement('div');
                         el.className = 'block smart-flow-wrap';
                         el.innerHTML = imgs.map((img, i) => {
-                            const w = img.w !== undefined ? img.w : 46;
+                            const w = img.w !== undefined ? img.w : 48.5;
                             return `
                                 <div class="smart-flow-item" style="width: calc(${w}% - 12px);">
-                                    ${buildCardInnerHtml(img, i)}
+                                    ${buildCardInnerHtml(img, i, config.watermark)}
                                 </div>
                             `;
                         }).join('');
                         return el;
                     }
 
-                    // 3. VERTICAL CAROUSEL
                     if (mode === 'v-carousel') {
                         const el = document.createElement('div');
                         el.className = `block v-carousel-wrap cols-${cols}`;
                         let colsHtml = '';
                         for (let c = 0; c < cols; c++) {
                             let colImgs = imgs.map((item, idx) => ({ item, idx })).filter((_, idx) => idx % cols === c);
-                            if (!colImgs.length) colImgs = imgs.map((item, idx) => ({ item, idx: (idx + c) % imgs.length }));
+                            if (!colImgs.length) colImgs = imgs.map((item, idx) => ({ item, idx }));
                             let baseSet = [...colImgs];
                             while (baseSet.length < 4) baseSet = baseSet.concat(colImgs);
                             const loopSet = [...baseSet, ...baseSet];
@@ -585,7 +482,7 @@
                             colsHtml += `
                                 <div class="v-col">
                                     <div class="v-track" style="animation: ${animName} ${colSpeed}s linear infinite;">
-                                        ${loopSet.map(entry => buildCardInnerHtml(entry.item, entry.idx)).join('')}
+                                        ${loopSet.map(entry => buildCardInnerHtml(entry.item, entry.idx, config.watermark)).join('')}
                                     </div>
                                 </div>
                             `;
@@ -594,32 +491,20 @@
                         return el;
                     }
 
-                    // 4. HORIZONTAL CAROUSEL
                     if (mode === 'h-carousel') {
                         const el = document.createElement('div');
                         el.className = 'block h-carousel-wrap';
-                        const rows = Number(config.hCarouselRows) || 1;
-                        let rowsHtml = '';
-                        for (let r = 0; r < rows; r++) {
-                            let rowImgs = rows > 1
-                                ? imgs.map((item, idx) => ({ item, idx })).filter((_, idx) => idx % rows === r)
-                                : imgs.map((item, idx) => ({ item, idx }));
-                            if (!rowImgs.length) rowImgs = imgs.map((item, idx) => ({ item, idx }));
-                            let baseSet = [...rowImgs];
-                            while (baseSet.length < 6) baseSet = baseSet.concat(rowImgs);
-                            const loopSet = [...baseSet, ...baseSet];
+                        let rowImgs = imgs.map((item, idx) => ({ item, idx }));
+                        let baseSet = [...rowImgs];
+                        while (baseSet.length < 6) baseSet = baseSet.concat(rowImgs);
+                        const loopSet = [...baseSet, ...baseSet];
+                        const animName = (config.carouselDirection === 'right') ? 'scrollRight' : 'scrollLeft';
 
-                            let animName = 'scrollLeft';
-                            if (config.carouselDirection === 'right' || config.carouselDirection === 'down') animName = 'scrollRight';
-                            else if (config.carouselDirection === 'alt') animName = (r % 2 === 0) ? 'scrollLeft' : 'scrollRight';
-
-                            rowsHtml += `
-                                <div class="h-row" style="animation: ${animName} ${speed + r * 4}s linear infinite;">
-                                    ${loopSet.map(entry => buildCardInnerHtml(entry.item, entry.idx)).join('')}
-                                </div>
-                            `;
-                        }
-                        el.innerHTML = rowsHtml;
+                        el.innerHTML = `
+                            <div class="h-row" style="animation: ${animName} ${speed}s linear infinite;">
+                                ${loopSet.map(entry => buildCardInnerHtml(entry.item, entry.idx, config.watermark)).join('')}
+                            </div>
+                        `;
                         return el;
                     }
                 }
@@ -632,22 +517,7 @@
                 }
             });
 
-            // Recalculate 1:1 Freeform Canvas height once images load
-            const allDomImgs = app.querySelectorAll('img[data-idx]');
-            allDomImgs.forEach(domImg => {
-                domImg.addEventListener('load', updateFreeCanvasScale);
-            });
             setTimeout(updateFreeCanvasScale, 60);
-
-            // Bake watermarks onto all images
-            const imgs = config.images || [];
-            for (let i = 0; i < imgs.length; i++) {
-                const bakedUrl = await bakeWatermarkToDataUrl(imgs[i], config.watermark);
-                app.querySelectorAll(`img[data-idx="${i}"]`).forEach(el => {
-                    if (el.src !== bakedUrl) el.src = bakedUrl;
-                });
-            }
-            setTimeout(updateFreeCanvasScale, 150);
         }
 
         async function init() {
