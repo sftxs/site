@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToiletGonzo | Official Page</title>
+    <!-- Мгновенный логотип сайта (Favicon) во вкладке браузера -->
+    <link rel="icon" id="site-favicon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236c5ce7'/%3E%3Cstop offset='100%25' stop-color='%23229ed9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='url(%23g)'/%3E%3Ctext x='50' y='64' font-family='Arial,sans-serif' font-size='42' font-weight='900' fill='%23ffffff' text-anchor='middle'%3ETG%3C/text%3E%3C/svg%3E">
+    <!-- Предзагрузка данных с CDN для максимальной скорости -->
+    <link rel="preload" href="./data-fast.json" as="fetch" crossorigin="anonymous">
     <style>
         :root {
             --bg: #09090d;
@@ -85,6 +89,28 @@
         }
         .floating-tg .tg-btn { width: 100%; }
 
+        /* Instant Skeleton Shimmer while loading on slow connections */
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--gap);
+            width: 100%;
+        }
+        .skeleton-card {
+            height: 360px;
+            border-radius: var(--radius);
+            background: linear-gradient(110deg, #13131a 8%, #1e1e2a 18%, #13131a 33%);
+            background-size: 200% 100%;
+            animation: shimmer 1.3s linear infinite;
+            border: 1px solid var(--border);
+        }
+        @keyframes shimmer {
+            to { background-position-x: -200%; }
+        }
+        @media (max-width: 600px) {
+            .skeleton-card { height: 240px; }
+        }
+
         /* Card Shared */
         .gallery-card {
             background: var(--card-bg);
@@ -98,11 +124,16 @@
         .gallery-card:hover { border-color: rgba(255, 255, 255, 0.26); }
         .gallery-card .img-wrap {
             width: 100%; position: relative; overflow: hidden; line-height: 0;
-            cursor: pointer;
+            cursor: pointer; background: #101017;
         }
         .gallery-card img.main-photo {
             width: 100%; height: auto; display: block;
             user-select: none; -webkit-user-drag: none;
+            animation: fadeInImg 0.25s ease;
+        }
+        @keyframes fadeInImg {
+            from { opacity: 0.2; }
+            to { opacity: 1; }
         }
         .gallery-caption {
             padding: 10px 14px; font-size: 13.5px; color: #d6d8e4;
@@ -202,7 +233,7 @@
             .h-row .gallery-card { width: 220px; }
         }
 
-        /* Lightbox (Full Screen with Watermark Support) */
+        /* Lightbox */
         .lightbox {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92);
             backdrop-filter: blur(10px); display: none;
@@ -230,12 +261,11 @@
         }
     </style>
 </head>
-<body>
+<body oncontextmenu="if(event.target.tagName==='IMG') return false;">
 
     <div class="container" id="app"></div>
     <div id="floating-container"></div>
 
-    <!-- Полноэкранный просмотр с вотермаркой -->
     <div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
         <div class="lightbox-inner" id="lightbox-inner">
             <img class="lightbox-main" id="lightbox-img" src="" alt="Preview" onload="updateWatermarkFontSizes()">
@@ -286,11 +316,25 @@
         let activeConfig = DEFAULT_CONFIG;
         let cachedLogoImg = null;
         let currentLightboxIdx = null;
+        let isDataLoaded = false;
 
         function escapeHtml(str) {
             return String(str || '').replace(/[&<>"']/g, m => ({
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
             }[m]));
+        }
+
+        function updateFavicon(cfg) {
+            const link = document.getElementById('site-favicon');
+            if (!link) return;
+            if (cfg.avatarImage) {
+                link.type = "image/webp";
+                link.href = cfg.avatarImage;
+            } else {
+                const txt = escapeHtml((cfg.avatarText || 'TG').slice(0, 3));
+                link.type = "image/svg+xml";
+                link.href = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%236c5ce7'/%3E%3Cstop offset='100%25' stop-color='%23229ed9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='url(%23g)'/%3E%3Ctext x='50' y='64' font-family='Arial,sans-serif' font-size='42' font-weight='900' fill='%23ffffff' text-anchor='middle'%3E${ encodeURIComponent(txt) }%3C/text%3E%3C/svg%3E`;
+            }
         }
 
         function buildWatermarkOverlayHtml(img, gWm) {
@@ -324,7 +368,7 @@
             `;
         }
 
-        // Впекание вотермарки прямо в пиксели фото (защита при открытии и скачивании)
+        // Bake watermark into pixels only on demand (Lightbox open), keeping page load 100% lag-free
         async function bakeWatermarkToDataUrl(imgObj, globalWm) {
             if (imgObj._bakedSrc) return imgObj._bakedSrc;
             const wm = imgObj.wm || {};
@@ -388,11 +432,8 @@
                             const boxH = fontSize + padY * 2;
                             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
                             ctx.beginPath();
-                            if (ctx.roundRect) {
-                                ctx.roundRect(-boxW / 2, -boxH / 2, boxW, boxH, fontSize * 0.45);
-                            } else {
-                                ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
-                            }
+                            if (ctx.roundRect) ctx.roundRect(-boxW / 2, -boxH / 2, boxW, boxH, fontSize * 0.45);
+                            else ctx.rect(-boxW / 2, -boxH / 2, boxW, boxH);
                             ctx.fill();
                         } else if (styleMode === 'outline') {
                             ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
@@ -446,7 +487,6 @@
             } else {
                 lbImg.src = imgObj.src;
                 lbWm.innerHTML = buildWatermarkOverlayHtml(imgObj, activeConfig.watermark);
-                // Параллельно впекаем вотермарку в полноэкранное фото
                 bakeWatermarkToDataUrl(imgObj, activeConfig.watermark).then((bakedUrl) => {
                     if (currentLightboxIdx === idx && imgObj._isBaked) {
                         lbImg.src = bakedUrl;
@@ -461,11 +501,11 @@
 
         function buildCardInnerHtml(img, idx, gWm) {
             const captionHtml = img.caption ? `<div class="gallery-caption">${escapeHtml(img.caption)}</div>` : '';
-            const displaySrc = img._bakedSrc || img.src;
+            const priorityAttr = idx < 4 ? 'fetchpriority="high"' : 'loading="lazy"';
             return `
                 <div class="gallery-card">
                     <div class="img-wrap" data-wrap-idx="${idx}" onclick="handleImageClick(${idx})">
-                        <img class="main-photo" data-idx="${idx}" src="${displaySrc}" alt="${escapeHtml(img.caption || '')}" onload="onSiteImgLoad()">
+                        <img class="main-photo" data-idx="${idx}" src="${img.src}" ${priorityAttr} decoding="async" alt="${escapeHtml(img.caption || '')}" onload="onSiteImgLoad()">
                         <div class="card-wm-layer" data-wm-idx="${idx}">${buildWatermarkOverlayHtml(img, gWm)}</div>
                     </div>
                     ${captionHtml}
@@ -510,7 +550,7 @@
 
         window.addEventListener('resize', updateFreeCanvasScale);
 
-        async function renderSite(cfg) {
+        function renderSite(cfg, showLoadingSkeleton = false) {
             const config = {
                 ...DEFAULT_CONFIG,
                 ...cfg,
@@ -518,6 +558,7 @@
             };
             activeConfig = config;
             document.title = `${config.title || 'ToiletGonzo'} | Official Page`;
+            updateFavicon(config);
 
             const app = document.getElementById('app');
             const floatContainer = document.getElementById('floating-container');
@@ -574,7 +615,15 @@
                 },
                 gallery: () => {
                     const imgs = config.images || [];
-                    if (!imgs.length) return null;
+                    if (!imgs.length) {
+                        if (showLoadingSkeleton) {
+                            const skel = document.createElement('div');
+                            skel.className = 'block skeleton-grid';
+                            skel.innerHTML = `<div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>`;
+                            return skel;
+                        }
+                        return null;
+                    }
 
                     const mode = config.displayMode || 'canvas';
                     const cols = Number(config.galleryColumns) || 2;
@@ -666,38 +715,48 @@
                 }
             });
 
-            setTimeout(updateFreeCanvasScale, 60);
-
-            // Фоновое впекание вотермарок в пиксели всех картинок
-            const imgs = config.images || [];
-            for (let i = 0; i < imgs.length; i++) {
-                bakeWatermarkToDataUrl(imgs[i], config.watermark).then((bakedUrl) => {
-                    if (imgs[i]._isBaked) {
-                        app.querySelectorAll(`img.main-photo[data-idx="${i}"]`).forEach(el => {
-                            el.src = bakedUrl;
-                        });
-                        app.querySelectorAll(`.card-wm-layer[data-wm-idx="${i}"]`).forEach(el => {
-                            el.innerHTML = '';
-                        });
-                    }
-                });
-            }
+            setTimeout(updateFreeCanvasScale, 40);
         }
 
         async function init() {
-            const localCache = localStorage.getItem('tg_site_preview_cache');
-            if (localCache) {
-                try { renderSite(JSON.parse(localCache)); } catch (e) {}
+            // 1. Мгновенный показ из кэша, если посетитель уже заходил или это админ
+            const adminCache = localStorage.getItem('tg_site_preview_cache');
+            const visitorCache = localStorage.getItem('tg_visitor_fast_cache');
+
+            if (adminCache) {
+                try { renderSite(JSON.parse(adminCache), false); isDataLoaded = true; } catch (e) {}
+            } else if (visitorCache) {
+                try { renderSite(JSON.parse(visitorCache), false); isDataLoaded = true; } catch (e) {}
             } else {
-                renderSite(DEFAULT_CONFIG);
+                // Показываем шапку, кнопку и мерцающие карточки-скелетоны с 1-й миллисекунды
+                renderSite(DEFAULT_CONFIG, true);
             }
 
+            // 2. Сверхбыстрая загрузка первого экрана (data-fast.json с CDN-кэшированием)
+            const fastPromise = fetch('./data-fast.json')
+                .then(r => r.ok ? r.json() : null)
+                .then(fastData => {
+                    if (fastData && !isDataLoaded) {
+                        renderSite(fastData, false);
+                        try { localStorage.setItem('tg_visitor_fast_cache', JSON.stringify(fastData)); } catch (e) {}
+                    }
+                })
+                .catch(() => {});
+
+            // 3. Полная загрузка всех фотографий (data.json через глобальный CDN GitHub)
             try {
-                const res = await fetch(`./data.json?v=${Date.now()}`, { cache: "no-store" });
-                if (res.ok) {
-                    const serverData = await res.json();
-                    renderSite(serverData);
+                const fullRes = await fetch('./data.json');
+                if (fullRes.ok) {
+                    const fullData = await fullRes.json();
+                    isDataLoaded = true;
+                    renderSite(fullData, false);
                     localStorage.removeItem('tg_site_preview_cache');
+                    try {
+                        const lightCopy = { ...fullData, images: (fullData.images || []).slice(0, 6) };
+                        localStorage.setItem('tg_visitor_fast_cache', JSON.stringify(lightCopy));
+                    } catch (e) {}
+                } else {
+                    await fastPromise;
                 }
             } catch (err) {}
         }
