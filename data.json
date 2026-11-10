@@ -13,8 +13,8 @@
   "galleryColumns": 1,
   "layoutOrder": [
     "header",
-    "gallery",
-    "button"
+    "button",
+    "gallery"
   ],
   "images": [
     {
