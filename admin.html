@@ -6,11 +6,11 @@
     <title>Admin Panel | ToiletGonzo</title>
     <style>
         :root {
-            --bg: #0f0f13;
-            --panel: #181820;
-            --border: #2a2a36;
+            --bg: #0d0d12;
+            --panel: #16161f;
+            --border: #282838;
             --text: #ffffff;
-            --muted: #8e929f;
+            --muted: #8e92a4;
             --primary: #6c5ce7;
             --tg: #229ed9;
             --danger: #ff4757;
@@ -22,7 +22,7 @@
             color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            padding: 24px 16px 80px;
+            padding: 24px 16px 100px;
         }
         .login-wrap {
             max-width: 380px;
@@ -34,11 +34,11 @@
             text-align: center;
         }
         .admin-wrap {
-            max-width: 820px;
+            max-width: 920px;
             margin: 0 auto;
             display: none;
             flex-direction: column;
-            gap: 24px;
+            gap: 22px;
         }
         .card {
             background: var(--panel);
@@ -46,48 +46,53 @@
             border-radius: 16px;
             padding: 22px;
         }
-        h2 { font-size: 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-        label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; margin-top: 14px; }
-        input[type="text"], input[type="password"], select {
+        h2 { font-size: 19px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; }
+        label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; margin-top: 12px; }
+        input[type="text"], input[type="password"], input[type="number"], select {
             width: 100%;
-            background: #101016;
+            background: #0f0f15;
             border: 1px solid var(--border);
             color: #fff;
-            padding: 12px 14px;
+            padding: 11px 14px;
             border-radius: 10px;
             font-size: 14px;
             outline: none;
         }
         input:focus, select:focus { border-color: var(--primary); }
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        @media (max-width: 600px) { .row { grid-template-columns: 1fr; } }
+        .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+        @media (max-width: 680px) {
+            .row, .row-3 { grid-template-columns: 1fr; }
+        }
 
         .btn {
             background: var(--primary);
             color: #fff;
             border: none;
-            padding: 12px 20px;
+            padding: 11px 18px;
             border-radius: 10px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.1s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            text-decoration: none;
         }
-        .btn:hover { opacity: 0.9; }
-        .btn-success { background: var(--tg); font-size: 16px; padding: 15px 26px; width: 100%; }
-        .btn-danger { background: rgba(255, 71, 87, 0.15); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 7px 12px; }
-        .btn-sm { padding: 7px 12px; font-size: 13px; background: #252532; }
+        .btn:hover { opacity: 0.92; }
+        .btn:active { transform: scale(0.98); }
+        .btn-success { background: var(--tg); font-size: 15px; padding: 14px 24px; }
+        .btn-danger { background: rgba(255, 71, 87, 0.14); color: var(--danger); border: 1px solid rgba(255, 71, 87, 0.3); padding: 6px 10px; font-size: 12px; }
+        .btn-sm { padding: 6px 10px; font-size: 12px; background: #232332; }
 
         /* Order list */
         .order-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #121218;
+            background: #101017;
             border: 1px solid var(--border);
             padding: 12px 16px;
             border-radius: 10px;
@@ -96,34 +101,64 @@
         }
         .order-controls { display: flex; gap: 6px; }
 
-        /* Image Upload & List */
+        /* Upload & Drag-and-Drop Image Grid */
         .upload-zone {
             border: 2px dashed var(--border);
             border-radius: 14px;
-            padding: 28px;
+            padding: 26px;
             text-align: center;
             cursor: pointer;
             transition: border-color 0.2s, background 0.2s;
             margin-bottom: 16px;
         }
         .upload-zone:hover { border-color: var(--tg); background: rgba(34, 158, 217, 0.05); }
-        .img-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+
+        .img-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 14px;
+            margin-top: 16px;
+        }
         .img-item {
-            background: #121218;
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: #101017;
+            border: 2px solid var(--border);
+            border-radius: 14px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            cursor: grab;
+            transition: transform 0.2s, border-color 0.2s, opacity 0.2s;
+            position: relative;
         }
-        .img-item img { width: 100%; height: 150px; object-fit: cover; }
+        .img-item:active { cursor: grabbing; }
+        .img-item.dragging { opacity: 0.4; border-color: var(--tg); transform: scale(0.96); }
+        .img-item.drag-over { border-color: var(--success); transform: translateY(-4px); }
+        .img-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+        .img-item img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            pointer-events: none;
+        }
         .img-item-body { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .img-actions { display: flex; justify-content: space-between; gap: 6px; }
+        .img-actions { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
 
         .status-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: rgba(24, 24, 32, 0.95);
+            background: rgba(22, 22, 31, 0.96);
             backdrop-filter: blur(10px);
             border-top: 1px solid var(--border);
             padding: 14px 20px;
@@ -131,13 +166,13 @@
             justify-content: center;
             z-index: 100;
         }
-        .status-inner { max-width: 820px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .status-inner { max-width: 920px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
         .badge { font-size: 13px; color: var(--muted); }
     </style>
 </head>
 <body>
 
-    <!-- ОКНО ВХОДА ПО ПАРОЛЮ -->
+    <!-- ОКНО ВХОДА -->
     <div class="login-wrap" id="loginBox">
         <h2 style="justify-content: center; margin-bottom: 8px;">🔒 Вход в Админку</h2>
         <p style="color: var(--muted); font-size: 13px; margin-bottom: 20px;">Введите пароль администратора</p>
@@ -148,74 +183,142 @@
 
     <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
     <div class="admin-wrap" id="adminBox">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>⚙️ Управление toiletgonzo.vip</h1>
-            <a href="/" target="_blank" class="btn btn-sm">Открыть сайт ↗</a>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <h1>⚙️ Админка toiletgonzo.vip</h1>
+            <a href="/" target="_blank" class="btn btn-sm">Открыть сайт в новой вкладке ↗</a>
         </div>
 
-        <!-- 1. Подключение к GitHub (один раз) -->
+        <!-- 1. GitHub API -->
         <div class="card">
             <h2>🔑 Подключение к серверу GitHub</h2>
-            <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">
-                Чтобы картинки и изменения сохранялись на сервере для всех посетителей, вставьте ваш GitHub Token (вводится 1 раз, сохраняется в браузере).
-            </p>
             <div class="row">
                 <div>
                     <label>Репозиторий (владелец/имя)</label>
                     <input type="text" id="ghRepo" value="sftxs/site">
                 </div>
                 <div>
-                    <label>GitHub Personal Access Token</label>
+                    <label>GitHub Personal Access Token (сохраняется в браузере)</label>
                     <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx...">
                 </div>
             </div>
         </div>
 
-        <!-- 2. Расположение блоков на сайте -->
+        <!-- 2. Настройки Галереи, Столбцов и Карусели -->
         <div class="card">
-            <h2>📐 Порядок блоков на странице</h2>
-            <p style="font-size: 13px; color: var(--muted); margin-bottom: 14px;">
-                Меняйте порядок стрелочками — например, поставьте кнопку Telegram над картинками или под ними:
-            </p>
-            <div id="layoutList"></div>
-        </div>
-
-        <!-- 3. Загрузка картинок -->
-        <div class="card">
-            <h2>🖼️ Картинки по центру сайта</h2>
-            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
-                <p style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">➕ Нажмите сюда, чтобы выбрать картинки</p>
-                <p style="font-size: 13px; color: var(--muted);">Можно выбрать сразу несколько фото (JPG, PNG, WEBP)</p>
-                <input type="file" id="fileInput" multiple accept="image/*" style="display: none" onchange="handleFiles(this.files)">
+            <h2>🎠 Режим отображения картинок и Карусели</h2>
+            <div class="row">
+                <div>
+                    <label>Как показывать картинки на сайте:</label>
+                    <select id="displayMode" onchange="updateState()">
+                        <option value="grid">🔲 Ровная сетка (Авто-обрезка без черных полос)</option>
+                        <option value="masonry">🧱 Живая плитка (Без обрезки, фото подъезжают друг под друга)</option>
+                        <option value="v-carousel">🎡 Вертикальная карусель (Столбцы крутятся вверх/вниз)</option>
+                        <option value="h-carousel">🎞️ Горизонтальная карусель (Бегущая лента влево/вправо)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Количество столбцов на ПК (1, 2, 3 или 4):</label>
+                    <select id="galleryColumns" onchange="updateState()">
+                        <option value="1">1 столбец (Крупно по центру)</option>
+                        <option value="2">2 столбца</option>
+                        <option value="3">3 столбца</option>
+                        <option value="4">4 столбца</option>
+                    </select>
+                </div>
             </div>
 
-            <div style="margin-bottom: 16px;">
-                <label>Как отображать картинки на сайте:</label>
-                <select id="galleryColumns" onchange="updateState()">
-                    <option value="1">Крупно в 1 колонку по центру (рекомендуется)</option>
-                    <option value="2">Сеткой в 2 колонки</option>
-                </select>
+            <div class="row-3">
+                <div>
+                    <label>Пропорции карточек (убирает черные полосы):</label>
+                    <select id="aspectRatio" onchange="updateState()">
+                        <option value="9-16">9:16 (Вертикальные истории / Reels)</option>
+                        <option value="3-4">3:4 (Портретные карточки — оптимум)</option>
+                        <option value="1-1">1:1 (Ровный квадрат)</option>
+                        <option value="16-9">16:9 (Горизонтальные видео)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Столбцов на телефонах:</label>
+                    <select id="mobileColumns" onchange="updateState()">
+                        <option value="2">2 столбца (Компактно)</option>
+                        <option value="1">1 столбец (Крупно)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>При клике на картинку:</label>
+                    <select id="imageClickAction" onchange="updateState()">
+                        <option value="zoom">🔍 Увеличить фото на весь экран</option>
+                        <option value="telegram">✈️ Сразу перекинуть в Telegram</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Настройки вращения для каруселей -->
+            <div id="carouselSettingsBox" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); display: none;">
+                <div class="row-3">
+                    <div>
+                        <label>Направление движения карусели:</label>
+                        <select id="carouselDirection" onchange="updateState()">
+                            <option value="down">⬇ Сверху вниз (или Вправо)</option>
+                            <option value="up">⬆ Снизу вверх (или Влево)</option>
+                            <option value="alt">⇅ Шахматно (Четные столбцы вниз, нечетные вверх)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Скорость кручения (секунд на круг — меньше = быстрее):</label>
+                        <input type="number" id="carouselSpeed" min="8" max="90" value="28" oninput="updateState()">
+                    </div>
+                    <div>
+                        <label>Рядов (для горизонтальной карусели):</label>
+                        <select id="hCarouselRows" onchange="updateState()">
+                            <option value="1">1 ряд</option>
+                            <option value="2">2 ряда (движутся параллельно)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Загрузка и Сортировка картинок мышкой -->
+        <div class="card">
+            <h2>
+                <span>🖼️ Картинки на сайте (<span id="imgCount">0</span> шт.)</span>
+                <button class="btn btn-danger" onclick="clearAllImages()" id="clearAllBtn" style="display: none;">Очистить все</button>
+            </h2>
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 6px;">➕ Нажмите сюда, чтобы загрузить картинки</p>
+                <p style="font-size: 13px; color: var(--muted);">Можно выделить сразу много фотографий • Перетаскивайте карточки мышкой, чтобы менять их местами!</p>
+                <input type="file" id="fileInput" multiple accept="image/*" style="display: none" onchange="handleFiles(this.files)">
             </div>
 
             <div class="img-list" id="imgList"></div>
         </div>
 
-        <!-- 4. Настройка кнопки Telegram и Текстов -->
+        <!-- 4. Порядок блоков -->
         <div class="card">
-            <h2>✈️ Кнопка Telegram и Текст шапки</h2>
+            <h2>📐 Порядок блоков на странице</h2>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 12px;">
+                Меняйте расположение кнопки Telegram, шапки и галереи картинок:
+            </p>
+            <div id="layoutList"></div>
+        </div>
+
+        <!-- 5. Настройка кнопки Telegram и Шапки -->
+        <div class="card">
+            <h2>✈️ Кнопка Contact in Telegram и Шапка</h2>
             <div class="row">
                 <div>
-                    <label>Текст на кнопке Telegram</label>
+                    <label>Текст на кнопке</label>
                     <input type="text" id="buttonText" value="Contact in Telegram" oninput="updateState()">
                 </div>
                 <div>
-                    <label>Ссылка куда ведет кнопка</label>
+                    <label>Ссылка на ваш Telegram</label>
                     <input type="text" id="telegramUrl" value="https://t.me/toiletgonzo" oninput="updateState()">
                 </div>
             </div>
-            <div class="row">
+            <div class="row-3">
                 <div>
-                    <label>Позиция кнопки</label>
+                    <label>Выравнивание кнопки</label>
                     <select id="buttonAlign" onchange="updateState()">
                         <option value="center">По центру</option>
                         <option value="left">Слева</option>
@@ -223,11 +326,18 @@
                     </select>
                 </div>
                 <div>
-                    <label>Размер и закрепление кнопки</label>
+                    <label>Режим кнопки</label>
                     <select id="buttonStyleMode" onchange="updateState()">
                         <option value="auto">Обычная аккуратная кнопка</option>
-                        <option value="full">Во всю ширину блока</option>
-                        <option value="floating">Всегда закреплена плавающей внизу экрана</option>
+                        <option value="full">Широкая кнопка</option>
+                        <option value="floating">Закреплена плавающей внизу экрана</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Анимация пульсации кнопки</label>
+                    <select id="buttonPulse" onchange="updateState()">
+                        <option value="true">✨ Включена (Привлекает внимание)</option>
+                        <option value="false">Выключена</option>
                     </select>
                 </div>
             </div>
@@ -244,9 +354,9 @@
                     <input type="text" id="subtitle" value="Official Page & Direct Contact" oninput="updateState()">
                 </div>
             </div>
-            <div class="row">
+            <div class="row-3">
                 <div>
-                    <label>Выравнивание текста шапки</label>
+                    <label>Выравнивание шапки</label>
                     <select id="headerAlign" onchange="updateState()">
                         <option value="center">По центру</option>
                         <option value="left">Слева</option>
@@ -254,8 +364,16 @@
                     </select>
                 </div>
                 <div>
-                    <label>Текст круглой аватарки (или оставьте пустым)</label>
+                    <label>Текст аватарки (если нет фото)</label>
                     <input type="text" id="avatarText" value="TG" oninput="updateState()">
+                </div>
+                <div>
+                    <label>Картинка на аватарку (по желанию)</label>
+                    <div style="display: flex; gap: 6px; margin-top: 4px;">
+                        <button class="btn btn-sm" style="flex:1;" onclick="document.getElementById('avatarInput').click()">Загрузить фото</button>
+                        <button class="btn btn-danger" onclick="state.avatarImage=''; updateState();">Сброс</button>
+                        <input type="file" id="avatarInput" accept="image/*" style="display:none" onchange="handleAvatar(this.files)">
+                    </div>
                 </div>
             </div>
         </div>
@@ -263,8 +381,8 @@
 
     <div class="status-bar" id="statusBar" style="display: none;">
         <div class="status-inner">
-            <span class="badge" id="saveStatus">Все изменения готовы к публикации</span>
-            <button class="btn btn-success" style="width: auto;" onclick="publishToGitHub()" id="pubBtn">
+            <span class="badge" id="saveStatus">Готово к сохранению</span>
+            <button class="btn btn-success" onclick="publishToGitHub()" id="pubBtn">
                 💾 Сохранить и опубликовать на сайт
             </button>
         </div>
@@ -272,9 +390,9 @@
 
     <script>
         // ==========================================
-        // ПАРОЛЬ ОТ АДМИНКИ (МОЖНО ИЗМЕНИТЬ ЗДЕСЬ)
+        // ПАРОЛЬ ОТ АДМИНКИ
         // ==========================================
-        const ADMIN_PASSWORD = "adminadmin12"; 
+        const ADMIN_PASSWORD = "admin";
 
         let state = {
             title: "ToiletGonzo",
@@ -288,15 +406,25 @@
             buttonAlign: "center",
             buttonWidth: "auto",
             buttonFloating: false,
-            galleryColumns: 1,
-            layoutOrder: ["header", "gallery", "button"],
+            buttonPulse: true,
+            displayMode: "grid",
+            galleryColumns: 2,
+            mobileColumns: 2,
+            aspectRatio: "3-4",
+            carouselDirection: "down",
+            carouselSpeed: 28,
+            hCarouselRows: 1,
+            imageClickAction: "zoom",
+            layoutOrder: ["header", "button", "gallery"],
             images: []
         };
 
+        let draggedIndex = null;
+
         const BLOCK_NAMES = {
-            header: "👤 Шапка профиля (Аватар, Заголовок и Текст)",
-            gallery: "🖼️ Блок с картинками (Галерея по центру)",
-            button: "✈️ Кнопка Contact in Telegram"
+            header: "👤 Шапка профиля (Аватар, Заголовок и Подзаголовок)",
+            button: "✈️ Кнопка Contact in Telegram",
+            gallery: "🖼️ Галерея / Карусель картинок"
         };
 
         function checkLogin() {
@@ -340,7 +468,16 @@
             document.getElementById('buttonText').value = state.buttonText || 'Contact in Telegram';
             document.getElementById('telegramUrl').value = state.telegramUrl || 'https://t.me/toiletgonzo';
             document.getElementById('buttonAlign').value = state.buttonAlign || 'center';
-            document.getElementById('galleryColumns').value = String(state.galleryColumns || 1);
+            document.getElementById('buttonPulse').value = String(state.buttonPulse !== false);
+
+            document.getElementById('displayMode').value = state.displayMode || 'grid';
+            document.getElementById('galleryColumns').value = String(state.galleryColumns || 2);
+            document.getElementById('mobileColumns').value = String(state.mobileColumns || 2);
+            document.getElementById('aspectRatio').value = state.aspectRatio || '3-4';
+            document.getElementById('carouselDirection').value = state.carouselDirection || 'down';
+            document.getElementById('carouselSpeed').value = state.carouselSpeed || 28;
+            document.getElementById('hCarouselRows').value = String(state.hCarouselRows || 1);
+            document.getElementById('imageClickAction').value = state.imageClickAction || 'zoom';
 
             if (state.buttonFloating) {
                 document.getElementById('buttonStyleMode').value = 'floating';
@@ -349,6 +486,13 @@
             } else {
                 document.getElementById('buttonStyleMode').value = 'auto';
             }
+
+            toggleCarouselBox();
+        }
+
+        function toggleCarouselBox() {
+            const isCarousel = state.displayMode === 'v-carousel' || state.displayMode === 'h-carousel';
+            document.getElementById('carouselSettingsBox').style.display = isCarousel ? 'block' : 'none';
         }
 
         function updateState() {
@@ -359,11 +503,23 @@
             state.buttonText = document.getElementById('buttonText').value;
             state.telegramUrl = document.getElementById('telegramUrl').value;
             state.buttonAlign = document.getElementById('buttonAlign').value;
+            state.buttonPulse = document.getElementById('buttonPulse').value === 'true';
+
+            state.displayMode = document.getElementById('displayMode').value;
             state.galleryColumns = parseInt(document.getElementById('galleryColumns').value, 10);
+            state.mobileColumns = parseInt(document.getElementById('mobileColumns').value, 10);
+            state.aspectRatio = document.getElementById('aspectRatio').value;
+            state.carouselDirection = document.getElementById('carouselDirection').value;
+            state.carouselSpeed = parseInt(document.getElementById('carouselSpeed').value, 10) || 28;
+            state.hCarouselRows = parseInt(document.getElementById('hCarouselRows').value, 10) || 1;
+            state.imageClickAction = document.getElementById('imageClickAction').value;
 
             const mode = document.getElementById('buttonStyleMode').value;
             state.buttonFloating = (mode === 'floating');
             state.buttonWidth = (mode === 'full') ? 'full' : 'auto';
+
+            toggleCarouselBox();
+            localStorage.setItem('tg_site_preview_cache', JSON.stringify(state));
         }
 
         function renderLayoutOrder() {
@@ -386,10 +542,10 @@
             state.layoutOrder[idx] = state.layoutOrder[target];
             state.layoutOrder[target] = temp;
             renderLayoutOrder();
+            updateState();
         }
 
-        // Сжатие картинок в браузере перед публикацией
-        function compressImage(file, maxWidth = 1200, quality = 0.84) {
+        function compressImage(file, maxWidth = 1080, quality = 0.82) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -413,39 +569,93 @@
             });
         }
 
+        async function handleAvatar(files) {
+            if (!files || !files[0]) return;
+            state.avatarImage = await compressImage(files[0], 300, 0.85);
+            updateState();
+            document.getElementById('saveStatus').textContent = "✅ Аватарка загружена! Не забудьте нажать «Сохранить»";
+        }
+
         async function handleFiles(files) {
             if (!files || !files.length) return;
             const status = document.getElementById('saveStatus');
-            status.textContent = "⏳ Обработка картинок...";
+            status.textContent = "⏳ Оптимизация и добавление картинок...";
             for (const file of files) {
                 const dataUrl = await compressImage(file);
-                state.images.push({ src: dataUrl, caption: "" });
+                state.images.push({ src: dataUrl, caption: "", pos: "center" });
             }
             renderImages();
+            updateState();
             status.textContent = "✅ Картинки добавлены! Нажмите «Сохранить и опубликовать»";
         }
 
         function renderImages() {
             const box = document.getElementById('imgList');
+            document.getElementById('imgCount').textContent = state.images.length;
+            document.getElementById('clearAllBtn').style.display = state.images.length ? 'inline-flex' : 'none';
+
             if (!state.images.length) {
                 box.innerHTML = `<p style="color: var(--muted); font-size: 13px;">Картинок пока нет.</p>`;
                 return;
             }
+
             box.innerHTML = state.images.map((img, i) => `
-                <div class="img-item">
-                    <img src="${img.src}" alt="">
+                <div class="img-item" draggable="true"
+                     ondragstart="onDragStart(event, ${i})"
+                     ondragover="onDragOver(event, ${i})"
+                     ondragleave="onDragLeave(event)"
+                     ondrop="onDrop(event, ${i})"
+                     ondragend="onDragEnd(event)">
+                    <span class="img-badge">#${i + 1} (Тяни мышкой)</span>
+                    <img src="${img.src}" style="object-position: ${img.pos || 'center'};" alt="">
                     <div class="img-item-body">
-                        <input type="text" placeholder="Подпись (необязательно)" value="${(img.caption || '').replace(/"/g, '&quot;')}" oninput="state.images[${i}].caption = this.value">
+                        <input type="text" placeholder="Подпись (необязательно)" value="${(img.caption || '').replace(/"/g, '&quot;')}" oninput="state.images[${i}].caption = this.value; updateState();">
+                        <select onchange="state.images[${i}].pos = this.value; renderImages(); updateState();" style="padding: 7px 10px; font-size: 12px;">
+                            <option value="top" ${img.pos === 'top' ? 'selected' : ''}>Фокус обрезки: Верх (Лицо)</option>
+                            <option value="center" ${(!img.pos || img.pos === 'center') ? 'selected' : ''}>Фокус обрезки: Центр</option>
+                            <option value="bottom" ${img.pos === 'bottom' ? 'selected' : ''}>Фокус обрезки: Низ (Вотермарка)</option>
+                        </select>
                         <div class="img-actions">
                             <div>
-                                <button class="btn btn-sm" onclick="moveImg(${i}, -1)" ${i === 0 ? 'disabled' : ''}>⬅</button>
-                                <button class="btn btn-sm" onclick="moveImg(${i}, 1)" ${i === state.images.length - 1 ? 'disabled' : ''}>➡</button>
+                                <button class="btn btn-sm" title="Влево" onclick="moveImg(${i}, -1)" ${i === 0 ? 'disabled' : ''}>⬅</button>
+                                <button class="btn btn-sm" title="Вправо" onclick="moveImg(${i}, 1)" ${i === state.images.length - 1 ? 'disabled' : ''}>➡</button>
                             </div>
-                            <button class="btn btn-danger" onclick="removeImg(${i})">🗑 Удалить</button>
+                            <button class="btn btn-danger" onclick="removeImg(${i})">🗑</button>
                         </div>
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Drag and Drop Handlers
+        function onDragStart(e, index) {
+            draggedIndex = index;
+            e.currentTarget.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        function onDragOver(e, index) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (index !== draggedIndex) {
+                e.currentTarget.classList.add('drag-over');
+            }
+        }
+        function onDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+        function onDrop(e, dropIndex) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            if (draggedIndex === null || draggedIndex === dropIndex) return;
+            const movedItem = state.images.splice(draggedIndex, 1)[0];
+            state.images.splice(dropIndex, 0, movedItem);
+            draggedIndex = null;
+            renderImages();
+            updateState();
+        }
+        function onDragEnd(e) {
+            e.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.img-item').forEach(el => el.classList.remove('drag-over'));
         }
 
         function moveImg(i, dir) {
@@ -455,11 +665,21 @@
             state.images[i] = state.images[target];
             state.images[target] = temp;
             renderImages();
+            updateState();
         }
 
         function removeImg(i) {
             state.images.splice(i, 1);
             renderImages();
+            updateState();
+        }
+
+        function clearAllImages() {
+            if (confirm("Удалить все загруженные картинки?")) {
+                state.images = [];
+                renderImages();
+                updateState();
+            }
         }
 
         function utf8ToBase64(str) {
@@ -473,10 +693,8 @@
             const status = document.getElementById('saveStatus');
             const btn = document.getElementById('pubBtn');
 
-            localStorage.setItem('tg_site_preview_cache', JSON.stringify(state));
-
             if (!token) {
-                alert("Пожалуйста, вставьте ваш GitHub Personal Access Token в верхнем блоке, чтобы сохранить изменения на сервере!");
+                alert("Вставьте ваш GitHub Personal Access Token в верхнем блоке!");
                 return;
             }
 
@@ -484,7 +702,8 @@
             localStorage.setItem('tg_gh_repo', repo);
 
             btn.disabled = true;
-            status.textContent = "⏳ Отправка на сервер GitHub...";
+            status.style.color = "var(--text)";
+            status.textContent = "⏳ Отправка изменений на сервер GitHub...";
 
             try {
                 const apiUrl = `https://api.github.com/repos/${repo}/contents/data.json`;
@@ -521,11 +740,11 @@
 
                 if (!putRes.ok) {
                     const errData = await putRes.json();
-                    throw new Error(errData.message || "Ошибка доступа к GitHub API");
+                    throw new Error(errData.message || "Ошибка GitHub API");
                 }
 
                 status.style.color = "var(--success)";
-                status.textContent = "✅ Опубликовано! У вас сайт обновился мгновенно, у всех в мире — через 30 сек.";
+                status.textContent = "✅ Опубликовано! Откройте сайт — все изменения уже работают.";
             } catch (err) {
                 status.style.color = "var(--danger)";
                 status.textContent = "❌ Ошибка: " + err.message;
